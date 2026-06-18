@@ -1,0 +1,153 @@
+{
+  "timeslots": [
+    { "id": 1, "day": "Monday",    "start": "08:00", "end": "09:30" },
+    { "id": 2, "day": "Monday",    "start": "09:45", "end": "11:15" },
+    { "id": 3, "day": "Monday",    "start": "11:30", "end": "13:00" },
+    { "id": 4, "day": "Monday",    "start": "14:00", "end": "15:30" },
+    { "id": 5, "day": "Monday",    "start": "15:45", "end": "17:15" },
+    { "id": 6, "day": "Tuesday",   "start": "08:00", "end": "09:30" },
+    { "id": 7, "day": "Tuesday",   "start": "09:45", "end": "11:15" },
+    { "id": 8, "day": "Tuesday",   "start": "11:30", "end": "13:00" },
+    { "id": 9, "day": "Tuesday",   "start": "14:00", "end": "15:30" },
+    { "id": 10, "day": "Tuesday",  "start": "15:45", "end": "17:15" },
+    { "id": 11, "day": "Wednesday","start": "08:00", "end": "09:30" },
+    { "id": 12, "day": "Wednesday","start": "09:45", "end": "11:15" },
+    { "id": 13, "day": "Wednesday","start": "11:30", "end": "13:00" },
+    { "id": 14, "day": "Wednesday","start": "14:00", "end": "15:30" },
+    { "id": 15, "day": "Wednesday","start": "15:45", "end": "17:15" },
+    { "id": 16, "day": "Thursday", "start": "08:00", "end": "09:30" },
+    { "id": 17, "day": "Thursday", "start": "09:45", "end": "11:15" },
+    { "id": 18, "day": "Thursday", "start": "11:30", "end": "13:00" },
+    { "id": 19, "day": "Thursday", "start": "14:00", "end": "15:30" },
+    { "id": 20, "day": "Thursday", "start": "15:45", "end": "17:15" },
+    { "id": 21, "day": "Friday",   "start": "08:00", "end": "09:30" },
+    { "id": 22, "day": "Friday",   "start": "09:45", "end": "11:15" },
+    { "id": 23, "day": "Friday",   "start": "11:30", "end": "13:00" }
+  ],
+
+  "rooms": [
+    { "id": 1, "name": "Room 101", "capacity": 30,  "equipment": ["projector"] },
+    { "id": 2, "name": "Room 102", "capacity": 30,  "equipment": ["projector"] },
+    { "id": 3, "name": "Room 201", "capacity": 60,  "equipment": ["projector", "microphone"] },
+    { "id": 4, "name": "Room 202", "capacity": 60,  "equipment": ["projector", "microphone"] },
+    { "id": 5, "name": "Lab A",    "capacity": 25,  "equipment": ["projector", "computers"] },
+    { "id": 6, "name": "Lab B",    "capacity": 25,  "equipment": ["projector", "computers"] },
+    { "id": 7, "name": "Aula",     "capacity": 200, "equipment": ["projector", "microphone", "stage"] }
+  ],
+
+  "lecturers": [
+    {
+      "id": 1,
+      "name": "Prof. Schmidt",
+      "unavailable_timeslots": [1, 2, 6, 7],
+      "max_courses_per_day": 2
+    },
+    {
+      "id": 2,
+      "name": "Prof. Müller",
+      "unavailable_timeslots": [5, 10, 15, 20],
+      "max_courses_per_day": 3
+    },
+    {
+      "id": 3,
+      "name": "Dr. Weber",
+      "unavailable_timeslots": [21, 22, 23],
+      "max_courses_per_day": 2
+    },
+    {
+      "id": 4,
+      "name": "Dr. Fischer",
+      "unavailable_timeslots": [],
+      "max_courses_per_day": 3
+    },
+    {
+      "id": 5,
+      "name": "M.Sc. Bauer",
+      "unavailable_timeslots": [1, 6, 11, 16, 21],
+      "max_courses_per_day": 2
+    }
+  ],
+
+  "courses": [
+    {
+      "id": 1,
+      "name": "Mathematik 1",
+      "lecturer_id": 1,
+      "students": 55,
+      "required_equipment": ["projector", "microphone"],
+      "sessions_per_week": 2
+    },
+    {
+      "id": 2,
+      "name": "Programmierung Grundlagen",
+      "lecturer_id": 2,
+      "students": 22,
+      "required_equipment": ["projector", "computers"],
+      "sessions_per_week": 2
+    },
+    {
+      "id": 3,
+      "name": "Datenbanken",
+      "lecturer_id": 3,
+      "students": 40,
+      "required_equipment": ["projector"],
+      "sessions_per_week": 1
+    },
+    {
+      "id": 4,
+      "name": "Algorithmen & Datenstrukturen",
+      "lecturer_id": 1,
+      "students": 50,
+      "required_equipment": ["projector", "microphone"],
+      "sessions_per_week": 2
+    },
+    {
+      "id": 5,
+      "name": "Betriebssysteme",
+      "lecturer_id": 4,
+      "students": 35,
+      "required_equipment": ["projector"],
+      "sessions_per_week": 1
+    },
+    {
+      "id": 6,
+      "name": "Netzwerke",
+      "lecturer_id": 4,
+      "students": 30,
+      "required_equipment": ["projector"],
+      "sessions_per_week": 1
+    },
+    {
+      "id": 7,
+      "name": "Software Engineering",
+      "lecturer_id": 5,
+      "students": 45,
+      "required_equipment": ["projector", "microphone"],
+      "sessions_per_week": 2
+    },
+    {
+      "id": 8,
+      "name": "Web-Entwicklung",
+      "lecturer_id": 5,
+      "students": 20,
+      "required_equipment": ["projector", "computers"],
+      "sessions_per_week": 1
+    },
+    {
+      "id": 9,
+      "name": "Theoretische Informatik",
+      "lecturer_id": 2,
+      "students": 55,
+      "required_equipment": ["projector", "microphone"],
+      "sessions_per_week": 1
+    },
+    {
+      "id": 10,
+      "name": "IT-Sicherheit",
+      "lecturer_id": 3,
+      "students": 28,
+      "required_equipment": ["projector"],
+      "sessions_per_week": 1
+    }
+  ]
+}

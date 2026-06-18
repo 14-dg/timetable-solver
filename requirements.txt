@@ -1,0 +1,3 @@
+# No external dependencies required for the greedy solver.
+# Install ortools when you're ready to experiment with CP-SAT:
+# ortools>=9.8
