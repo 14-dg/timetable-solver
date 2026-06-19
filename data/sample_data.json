@@ -32,7 +32,14 @@
     { "id": 4, "name": "Room 202", "capacity": 60,  "equipment": ["projector", "microphone"] },
     { "id": 5, "name": "Lab A",    "capacity": 25,  "equipment": ["projector", "computers"] },
     { "id": 6, "name": "Lab B",    "capacity": 25,  "equipment": ["projector", "computers"] },
-    { "id": 7, "name": "Aula",     "capacity": 200, "equipment": ["projector", "microphone", "stage"] }
+    { "id": 7, "name": "Aula",     "capacity": 200, "equipment": ["projector", "microphone", "stage"] },
+    { "id": 8, "name": "Room 203", "capacity": 60,  "equipment": ["projector", "microphone"] },
+    { "id": 9, "name": "Room 204", "capacity": 60,  "equipment": ["projector", "microphone"] },
+    { "id": 10, "name": "Lab C",   "capacity": 25,  "equipment": ["projector", "computers"] },
+    { "id": 11, "name": "Lab D",   "capacity": 25,  "equipment": ["projector", "computers"] },
+    { "id": 12, "name": "Seminarraum A", "capacity": 20,  "equipment": ["projector"] },
+    { "id": 13, "name": "Seminarraum B", "capacity": 20,  "equipment": ["projector"] },
+    { "id": 14, "name": "Hörsaal 1",     "capacity": 150, "equipment": ["projector", "microphone"] }
   ],
 
   "lecturers": [
@@ -65,6 +72,36 @@
       "name": "M.Sc. Bauer",
       "unavailable_timeslots": [1, 6, 11, 16, 21],
       "max_courses_per_day": 2
+    },
+    {
+      "id": 6,
+      "name": "Prof. Wagner",
+      "unavailable_timeslots": [3, 4, 8, 9],
+      "max_courses_per_day": 2
+    },
+    {
+      "id": 7,
+      "name": "Dr. Hoffmann",
+      "unavailable_timeslots": [12, 13, 14, 15],
+      "max_courses_per_day": 3
+    },
+    {
+      "id": 8,
+      "name": "Dr. Richter",
+      "unavailable_timeslots": [1, 2, 3, 4, 5],
+      "max_courses_per_day": 2
+    },
+    {
+      "id": 9,
+      "name": "M.Sc. Koch",
+      "unavailable_timeslots": [6, 11, 16, 21],
+      "max_courses_per_day": 2
+    },
+    {
+      "id": 10,
+      "name": "Dipl.-Inf. Schulz",
+      "unavailable_timeslots": [10, 20, 22],
+      "max_courses_per_day": 3
     }
   ],
 
@@ -147,6 +184,86 @@
       "lecturer_id": 3,
       "students": 28,
       "required_equipment": ["projector"],
+      "sessions_per_week": 1
+    },
+    {
+      "id": 11,
+      "name": "Künstliche Intelligenz",
+      "lecturer_id": 6,
+      "students": 60,
+      "required_equipment": ["projector", "microphone"],
+      "sessions_per_week": 2
+    },
+    {
+      "id": 12,
+      "name": "Machine Learning",
+      "lecturer_id": 7,
+      "students": 20,
+      "required_equipment": ["projector", "computers"],
+      "sessions_per_week": 1
+    },
+    {
+      "id": 13,
+      "name": "Cloud Computing",
+      "lecturer_id": 8,
+      "students": 45,
+      "required_equipment": ["projector", "microphone"],
+      "sessions_per_week": 2
+    },
+    {
+      "id": 14,
+      "name": "Compilerbau",
+      "lecturer_id": 9,
+      "students": 25,
+      "required_equipment": ["projector", "computers"],
+      "sessions_per_week": 1
+    },
+    {
+      "id": 15,
+      "name": "Mensch-Computer-Interaktion",
+      "lecturer_id": 10,
+      "students": 40,
+      "required_equipment": ["projector"],
+      "sessions_per_week": 2
+    },
+    {
+      "id": 16,
+      "name": "Einführung in die Robotik",
+      "lecturer_id": 6,
+      "students": 20,
+      "required_equipment": ["projector", "computers"],
+      "sessions_per_week": 1
+    },
+    {
+      "id": 17,
+      "name": "Numerische Methoden",
+      "lecturer_id": 1,
+      "students": 55,
+      "required_equipment": ["projector", "microphone"],
+      "sessions_per_week": 2
+    },
+    {
+      "id": 18,
+      "name": "Formale Sprachen",
+      "lecturer_id": 2,
+      "students": 50,
+      "required_equipment": ["projector", "microphone"],
+      "sessions_per_week": 1
+    },
+    {
+      "id": 19,
+      "name": "Verteilte Systeme",
+      "lecturer_id": 4,
+      "students": 35,
+      "required_equipment": ["projector"],
+      "sessions_per_week": 2
+    },
+    {
+      "id": 20,
+      "name": "Ethik in der Informatik",
+      "lecturer_id": 3,
+      "students": 60,
+      "required_equipment": ["projector", "microphone"],
       "sessions_per_week": 1
     }
   ]
