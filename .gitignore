@@ -1,3 +1,7 @@
+# sql datenschema
+external_data_scheme
+
+# pycache
 *.pyc
 __pycache__
 

@@ -1,19 +1,8 @@
-from mock_data.generate import MockGenerator
+from erster_versuch import solve_university_schedule
 
 
 def main():
-    mock_generator = MockGenerator()
-
-    mock_lectures, mock_rooms, mock_teachers = mock_generator.generate_mock_data()
-        
-    print("--- Beispiel Teacher ---")
-    print(mock_teachers[0])
-    
-    print("\n--- Beispiel Room ---")
-    print(mock_rooms[0])
-
-    print("--- Beispiel Lecture ---")
-    print(mock_lectures[0])
+    solve_university_schedule()
 
 
 if __name__ == "__main__":
