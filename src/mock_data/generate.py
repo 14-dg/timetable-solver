@@ -7,12 +7,14 @@ from models.teacher import Teacher
 
 class MockGenerator:
 
-    def __init__(self):
+    def __init__(self, intervals: list[pd.Interval[pd.Timestamp]] | None = None):
         self.fake = Faker('de_DE')
-        self.possible_intervals = self.generate_time_intervals()
+        if not intervals:
+            self.possible_intervals = self.generate_time_intervals()
+        else: self.possible_intervals = intervals
 
     def generate_time_intervals(self):
-        possible_intervals: list[pd.Interval] = []
+        possible_intervals: list[pd.Interval[pd.Timestamp]] = []
         base_date = pd.Timestamp("2026-10-12 08:00") # Ein fiktiver Montag
 
         for day_offset in range(5): # Montag bis Freitag
@@ -22,20 +24,22 @@ class MockGenerator:
                 possible_intervals.append(pd.Interval(start, end, closed='both'))
         return possible_intervals
 
-    def generate_teachers(self) -> list[Teacher]:
+    def generate_teachers(self, count: int = 5) -> list[Teacher]:
         teachers: list[Teacher] = []
-        for i in range(1, 6): # 5 Dozenten
-            # Ziehe 3 bis 6 zufällige Intervalle aus dem Pool
-            random_slots = set(random.sample(self.possible_intervals, k=random.randint(3, 6)))
+        for i in range(count): # 5 Dozenten
+            # Ziehe 3 bis 6 zufällige Intervalle aus dem Pool der Zeitslots
+            random_slots = random.sample(population=self.possible_intervals, k=random.randint(3,6))
+            # Lege einige der zeitslots als preferierte zeitslots fest
+            preffered_slots = random.sample(population=range(len(random_slots)), k=random.randint(0,len(random_slots) // 2))
             teachers.append(
-                Teacher(id=i, name=f"Prof. {self.fake.last_name()}", available=random_slots)
+                Teacher(id=i, name=f"Prof. {self.fake.last_name()}", available=set(random_slots), preffered=preffered_slots)
             )
         return teachers
 
     
-    def generate_rooms(self) -> list[Room]:
+    def generate_rooms(self, count: int = 5) -> list[Room]:
         rooms: list[Room] = []
-        for i in range(1, 4): # 3 Räume
+        for i in range(count): # 3 Räume
             # Räume sind meistens öfter frei als Dozenten (hier 10 bis 15 Slots)
             random_slots = set(random.sample(self.possible_intervals, k=random.randint(10, 15)))
             rooms.append(
@@ -44,12 +48,12 @@ class MockGenerator:
         return rooms
 
     
-    def generate_lectures(self) -> list[Lecture]:
+    def generate_lectures(self, count: int = 5) -> list[Lecture]:
         lectures: list[Lecture] = []
         subjects = ["Analysis", "Lineare Algebra", "Datenbanken", "Algorithmen", "IT-Recht"]
-        for i, sub in enumerate(subjects, start=1):
+        for i in range(count):
             lectures.append(
-                Lecture(id=i, name=sub, visitors=random.randint(15, 120))
+                Lecture(id=i, name=subjects[i], visitors=random.randint(15, 120))
             )
         return lectures
 
