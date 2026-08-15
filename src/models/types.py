@@ -1,3 +1,3 @@
 import pandas as pd
 
-timeframes = set[pd.Interval]
+type timeframes = set[pd.Interval[pd.Timestamp]]
