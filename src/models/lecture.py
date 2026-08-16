@@ -6,10 +6,16 @@ from models.room import Room, RoomType
 from models.teacher import Teacher
 
 class EventType(Enum):
-    VORLESUNG = "Vorlesung"
-    SEMINAR = "Seminar"
-    UEBUNG = "Übung"
-    PRAKTIKUM = "Praktikum"
+    VORLESUNG = "vorlesung"
+    SEMINAR = "seminar"
+    UEBUNG = "uebung"
+    PRAKTIKUM = "praktikum"
+
+@dataclass(kw_only=True)
+class Appointment:
+    duration_slots: int # die dauer des termins in zeitslots
+    week_skip: int # alle wie viele wochen soll der termin stattfinden
+    start_week: int # wenn die vorlesung alle 3 wochen stattfindet kann man hiermit sagen, ob die vorlesung in woche 1, 2 oder 3 stattfindet
     
 @dataclass(kw_only=True)
 class Lecture:
@@ -19,8 +25,7 @@ class Lecture:
     is_online: bool
     estimated_visitors: int
 
-    duration_slots: int
-    week_skip: int
+    appointments: list[Appointment]
 
     teachers: list[Teacher]
 
