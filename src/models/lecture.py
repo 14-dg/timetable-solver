@@ -1,12 +1,35 @@
 from dataclasses import dataclass
+from enum import Enum
 
+from models.cohort import Cohort
+from models.room import Room, RoomType
+from models.teacher import Teacher
 
+class EventType(Enum):
+    VORLESUNG = "Vorlesung"
+    SEMINAR = "Seminar"
+    UEBUNG = "Übung"
+    PRAKTIKUM = "Praktikum"
+    
 @dataclass(kw_only=True)
 class Lecture:
     id: int
-    name: str
-    visitors: int
+    title: str
+    event_type: EventType
+    is_online: bool
+    estimated_visitors: int
 
-    def __str__(self) -> str:
-        return f"{self.id=}\n{self.name=}\n{self.visitors=}\n"
-        
+    duration_slots: int
+    week_skip: int
+
+    teachers: list[Teacher]
+
+    mandatory_for: list[Cohort] # pflichtfach für
+    elective_for: list[Cohort]
+
+    required_room_type: RoomType | None
+    room_equipment_required: set[str]
+
+    possible_rooms: list[Room] | None # die LV kann nur in einem dieser räume stattfinden
+    preffered_rooms: list[Room] | None # die LV sollte am besten in einem dieser räume stattfinden
+    impossible_rooms: list[Room] | None # die LV darf in keinem dieser räume stattfinden

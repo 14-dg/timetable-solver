@@ -1,12 +1,19 @@
 from dataclasses import dataclass
-from models.types import timeframes
+from enum import Enum
 
+class RoomType(Enum):
+    SEMINARRAUM = "seminarraum"
+    LABOR = "labor"
+    HOERSAAL = "hoersaal"
+    PC_POOL = "pc_pool"
 
 @dataclass(kw_only=True)
 class Room:
     id: int
+    name: str
+    campus: str
     seats: int
-    available: timeframes
+    room_types: set[RoomType]
+    equipment: set[str]
 
-    def __str__(self) -> str:
-        return f"{self.id=}\n{self.seats=}\n{self.available=}\n"
+    available_slots: set[int]
