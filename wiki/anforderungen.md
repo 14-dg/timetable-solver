@@ -35,7 +35,7 @@ Erstellung von Pro- Semester Stundenplänen. Dafür werden Lehrveranstaltungen R
 - Räume haben Regelmäßige Zeiträume in denen Sie verfügbar sind
 - Räume haben Unregelmäßige Zeiträume in denen Sie nicht verfügbar sind (einzelne Termine)
 - Räume sind geografisch hierarchisch aufgeteilt (Campus -> Gebäude -> Raum)
-- Entfernung zwischen Räumen kann berechnet/geschätzt werden, wenn informationen eingetragen
+- Entfernung zwischen Räumen kann berechnet/geschätzt werden, wenn informationen eingetragen, basierend darauf, auf welchem Campus ein Raum liegt
 
 ### Features
 
