@@ -16,4 +16,4 @@ class Room:
     room_types: set[RoomType]
     equipment: set[str]
 
-    slots: set[int]
+    available_slots: set[int]
