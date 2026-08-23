@@ -2,7 +2,6 @@ from dataclasses import dataclass
 from enum import Enum
 
 from models.cohort import Cohort
-from models.occurence_rule import OccurenceRule
 from models.room import Room, RoomType
 from models.teacher import Teacher
 
@@ -20,14 +19,12 @@ class Lecture:
     is_online: bool
     estimated_visitors: int
 
-    start: int
-    end: int
-    sessions: list[OccurenceRule]
+    slots: set[int]
 
     teachers: list[Teacher]
 
     mandatory_for: list[Cohort] # pflichtfach für
-    elective_for: list[Cohort]
+    elective_for: list[Cohort] # wahlmodul für
 
     required_room_type: RoomType | None
     room_equipment_required: set[str]

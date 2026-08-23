@@ -1,8 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from models.occurence_rule import OccurenceRule
-
 class RoomType(Enum):
     SEMINARRAUM = "seminarraum"
     LABOR = "labor"
@@ -18,4 +16,4 @@ class Room:
     room_types: set[RoomType]
     equipment: set[str]
 
-    availability_sessions: list[OccurenceRule]
+    slots: set[int]
