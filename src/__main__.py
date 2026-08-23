@@ -1,8 +1,8 @@
-from erster_versuch import solve_university_schedule
+from massive_test import run_massive_test
 
 
 def main():
-    solve_university_schedule()
+    run_massive_test()
 
 
 if __name__ == "__main__":

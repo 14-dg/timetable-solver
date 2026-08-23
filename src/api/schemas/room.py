@@ -1,15 +1,14 @@
-from enum import Enum
-
 from pydantic import BaseModel
 
-from api.schemas.occurence_rule import ApiOccurenceRule
+from types.room_type import RoomType
+from types.weekday_type import Weekday
 
-class RoomType(Enum):
-    SEMINARRAUM = "seminarraum"
-    LABOR = "labor"
-    HOERSAAL = "hoersaal"
-    PC_POOL = "pc_pool"
-
+class RoomAvailabilityRule(BaseModel):
+    week_offset: int
+    week_step: int
+    start: int
+    end: int
+    weekdays: list[Weekday]
 
 class ApiRoom(BaseModel):
     id: int
@@ -19,4 +18,4 @@ class ApiRoom(BaseModel):
     room_types: set[RoomType]
     equipment: set[str]
 
-    availability_sessions: list[ApiOccurenceRule]
+    availability: list[RoomAvailabilityRule]

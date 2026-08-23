@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 
-from models.cohort import Cohort
-from models.room import Room, RoomType
-from models.teacher import Teacher
-from types.event_type import EventType
+from solver.models.cohort import Cohort
+from solver.models.room import Room, RoomType
+from solver.models.teacher import Teacher
+from custom_types.event_type import EventType
 
 @dataclass(kw_only=True)
 class ApiOccurenceRule:
