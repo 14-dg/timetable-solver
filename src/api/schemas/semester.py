@@ -4,7 +4,6 @@ from pydantic import BaseModel
 
 
 class SemesterSchema(BaseModel):
-    id: int
-    name: str
-    start_date: date
-    end_date: date
+    id: int | None = None
+    start_date: date | None = None
+    end_date: date | None = None

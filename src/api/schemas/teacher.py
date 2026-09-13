@@ -12,4 +12,3 @@ class LecturerAvailabilitySchema(BaseModel):
 class LecturerSchema(BaseModel):
     id: int
     name: str
-    department: str | None = None
