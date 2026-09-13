@@ -209,11 +209,13 @@ aufbewahrt werden.
 ================================================================================
 """
 
+from typing import Any
+
 from fastapi import FastAPI, Request, HTTPException, Header
 import uuid
 
 app = FastAPI()
-JOBS: dict = {}
+JOBS: dict[str, Any] = {}
 
 SECRET = "dev-secret"
 
