@@ -2,9 +2,13 @@
 
 ## Legende
 Lehrer = Lehrpersonal
+
 Lehrveranstaltung = LV = Vorlesung, Praktikum, Übung, etc.
+
 Lehreinheit = Ein konkreter Lehrveranstaltungstermin
+
 Raum = Hörsaal, Seminarraum, Labor, etc.
+
 Kohorte = Gruppe von Studierenden desselben Studiengangs und Fachsemesters
 
 ## Funktionale Anforderungen
@@ -46,6 +50,7 @@ Erstellung von Pro- Semester Stundenplänen. Dafür werden Lehrveranstaltungen R
 - **(aktivierbarer Soft Constraint 30)**: Vermeidung von Tagesrandzeiten: Lehrveranstaltungen sollen möglichst nicht früh, oder spät beginnen. Optional einstellbar, dass Vorlesungen mit hoher Hörerzahl stärker gewichtet werden.
 - **(aktivierbarer Soft Constraint 40)**: Konstanter LV Austragungsraum: Lehrveranstaltungen sollten an ihren Regelmäßigen Terminen möglichst den selben Raum nutzen.
 - **(aktivierbarer Soft Constraint 50)**: Vermeidung der Überlappung von Pflicht-LV eines Studiengangs unterschiedlicher Fachsemester. Für Studenten, die eine Pflicht-LV wiederholen müssen.
+- **(aktivierbarer Soft Constraint 55)**: Wahl-LVen sollen möglichst nicht mit Pflicht-LVen Kollidieren. Wahl-LVen sind Fachsemester unabhängig und Teils studiengang unabhängig.
 - **(aktivierbarer Soft Constraint 60)**: Vermeidung der Überlappung von Wahl-LVen deren potenzielle Hörer eine Schnittmenge Bilden. Minimierung der Gesamtschnittmenge.
 - **(aktivierbarer Soft Constraint 70)**: Beachten der Bevorzugten Zeiträume der Lehrer. Maximieren der zuordung in bevorzugte Zeiträume.
 - **(aktivierbarer Hard/Soft Constraint 80)**: Beachten der Maximalen Lehrzeit von Lehrern
