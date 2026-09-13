@@ -1,21 +1,17 @@
-from pydantic import BaseModel
+from datetime import datetime
 
-from types.room_type import RoomType
-from types.weekday_type import Weekday
+from pydantic import BaseModel, Field
 
-class RoomAvailabilityRule(BaseModel):
-    week_offset: int
-    week_step: int
-    start: int
-    end: int
-    weekdays: list[Weekday]
-
-class ApiRoom(BaseModel):
+class BlockedRoomBookingSchema(BaseModel):
+    room_id: int
+    start_time: datetime
+    end_time: datetime
+    
+class RoomSchema(BaseModel):
     id: int
     name: str
-    campus: str
     seats: int
-    room_types: set[RoomType]
-    equipment: set[str]
-
-    availability: list[RoomAvailabilityRule]
+    room_type_id: str | None = None
+    equipment_ids: list[str] = Field(default_factory=list)
+    is_locked: bool
+    accessible: bool

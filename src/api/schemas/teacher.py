@@ -1,11 +1,15 @@
+from datetime import time
+
 from pydantic import BaseModel
 
+class LecturerAvailabilitySchema(BaseModel):
+    lecturer_id: int
+    day_of_week: int
+    start_time: time
+    end_time: time
+    constraint_type: str  # z.B. 'hard' oder 'soft'
 
-class ApiTeacher(BaseModel):
+class LecturerSchema(BaseModel):
     id: int
     name: str
-    max_hours_per_day: int | None
-    max_consecutive_blocks: int | None
-
-    available_slots: set[int]
-    preffered_slots: set[int]
+    department: str | None = None

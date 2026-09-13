@@ -1,9 +1,9 @@
 import random
 import pandas as pd
 from faker import Faker
-from models.lecture import Lecture
-from models.room import Room
-from models.teacher import Teacher
+from solver.models.lecture import Lecture
+from solver.models.room import Room
+from solver.models.teacher import Teacher
 
 class MockGenerator:
 

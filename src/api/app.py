@@ -214,6 +214,8 @@ from typing import Any
 from fastapi import FastAPI, Request, HTTPException, Header
 import uuid
 
+from api.schemas.request_payload import SolveRequestPayload
+
 app = FastAPI()
 JOBS: dict[str, Any] = {}
 
@@ -228,14 +230,14 @@ def health():
     return {"status": "ok"}
 
 @app.post("/solve/start")
-async def start(request: Request, authorization: str | None = Header(None)):
+async def start(payload: SolveRequestPayload, authorization: str | None = Header(None)):
     check_auth(authorization)
     job_id = str(uuid.uuid4())
     JOBS[job_id] = {"polls": 0}
     return {"job_id": job_id, "status": "queued"}
 
 @app.get("/solve/{job_id}")
-def poll(job_id: str, authorization: str | None = Header(None)):
+def poll(job_id: str, authorization: str | None = Header(None)) -> dict[str, Any]:
     check_auth(authorization)
     if job_id not in JOBS:
         raise HTTPException(status_code=404)
