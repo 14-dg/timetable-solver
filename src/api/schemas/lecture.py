@@ -19,3 +19,4 @@ class LectureTimeslotSchema(BaseModel):
     week_skip: int = 0
     is_online: bool
     is_solver_pinned: bool
+    allow_weekends: bool = False

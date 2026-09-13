@@ -3,10 +3,10 @@ from dataclasses import dataclass
 from solver.models.cohort import Cohort
 from solver.models.room import Room, RoomType
 from solver.models.teacher import Teacher
-from custom_types.event_type import EventType
+from solver.models.event_type import EventType
 
 @dataclass(kw_only=True)
-class ApiOccurenceRule:
+class OccurenceRule:
     duration_slots: int # die dauer des termins in zeitslots
     week_step: int # alle wie viele wochen soll der termin stattfinden. 1 für jede woche, 2 für jede zweite woche
     week_offset: int # wenn die vorlesung alle 3 wochen stattfindet kann man hiermit sagen, ob die vorlesung in woche 1, 2 oder 3 stattfindet
@@ -18,8 +18,9 @@ class Lecture:
     event_type: EventType
     is_online: bool
     estimated_visitors: int
-
-    occurence_rules: list[ApiOccurenceRule]
+    allow_weekends: bool = False
+    
+    occurence_rules: list[OccurenceRule]
 
     teachers: list[Teacher]
 
