@@ -106,6 +106,7 @@ class UniversityTimetableSolver:
                         row: dict[str, Any] = {
                             "termin_id": termin_id,
                             "lecture_id": lecture.id,
+                            "duration_slots": rule.duration_slots,
                             "room_id": room.id,
                             "base_slot": base_slot,
                             "occurrences": occurrences,

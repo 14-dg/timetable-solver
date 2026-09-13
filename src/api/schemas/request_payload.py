@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 
 from api.schemas.grid_config import GridConfigSchema
+from api.schemas.lecture import Lecture
 from api.schemas.room import RoomSchema
 from api.schemas.semester import SemesterSchema
 from api.schemas.teacher import LecturerSchema
