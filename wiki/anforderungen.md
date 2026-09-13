@@ -83,3 +83,4 @@ Die Solver Constraints, die für jede Lehreinheit erfüllt sein müssen/sollten.
 - **(aktivierbarer Hard/Soft Constraint 10)** Raumausstattung erfüllt die Anforderungen der LV
 - **(aktivierbarer Hard/Soft Constraint 11)** Raum hat genug Sitzplätze
 - **(aktivierbarer Hard/Soft Constraint 80)** Maximale Anzahl an Lehrstunden pro Tag nicht überschritten
+- **(aktivierbarer Hard/Soft Constraint 90)** Übungen, Tutorien sollten immer nach einer Vorlesung stattfinden. Übungen vor einer Vorlesung ergeben keinen sinn, da man in der Übung das Gelernte erst festigt.
