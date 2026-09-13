@@ -4,7 +4,7 @@ from fastapi import BackgroundTasks, FastAPI, HTTPException, Header
 import uuid
 from api.store import jobs_db
 from api.background_task import run_solver_background_task
-from api.schemas.request_payload import SolveRequestPayload
+from api.schemas.schema import SolveRequestPayload
 
 app = FastAPI()
 JOBS: dict[str, Any] = {}
