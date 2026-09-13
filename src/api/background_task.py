@@ -1,5 +1,5 @@
 from typing import Any
-from api.schemas.request_payload import SolveRequestPayload
+from api.schemas.schema import SolveRequestPayload
 from api.translator import DataTranslator
 from solver.solver import UniversityTimetableSolver
 

@@ -1,10 +1,11 @@
-from api.schemas.request_payload import SolveRequestPayload
-
+from api.schemas.schema import SolveRequestPayload
 from solver.models.event_type import EventType
 from solver.models.lecture import Lecture, OccurenceRule
 from solver.models.room import Room, RoomType
 from solver.models.teacher import Teacher
+from solver.models.cohort import Cohort  # WICHTIG: Wieder importieren!
 from solver.models.solver_config import SolverConfig, ConstraintState
+
 
 class DataTranslator:
     def __init__(self, payload: SolveRequestPayload):
@@ -69,6 +70,17 @@ class DataTranslator:
                 
             assigned_teachers = [teacher_map[t_id] for t_id in api_l.lecturer_ids if t_id in teacher_map]
             
+            # NEU: Kohorten (Studiengang + Semester) dynamisch aus dem neuen Array aufbauen
+            mandatory_cohorts: list[Cohort] = []
+            for fs in api_l.fachsemester:
+                # Wir bauen eine eindeutige ID aus Studiengang und Semester
+                cohort_id = f"COS{fs.course_of_study_id}_SEM{fs.semester}"
+                mandatory_cohorts.append(Cohort(
+                    id=cohort_id, 
+                    studiengang=str(fs.course_of_study_id), 
+                    fachsemester=fs.semester
+                ))
+            
             # Die OccurenceRules anlegen
             rules = [OccurenceRule(
                 duration_slots=r.duration_slots,
@@ -81,11 +93,11 @@ class DataTranslator:
                 title=api_l.title,
                 event_type=e_type,
                 is_online=False,
-                estimated_visitors=api_l.estimated_visitors,
-                allow_weekends=False, # MVP: Vorlesungen nur Mo-Fr
+                estimated_visitors=30, # MVP Fallback (Da es nicht aus der DB kommt)
+                allow_weekends=False,  # MVP: Vorlesungen nur Mo-Fr
                 occurence_rules=rules,
                 teachers=assigned_teachers,
-                mandatory_for=[], 
+                mandatory_for=mandatory_cohorts, # <--- Integriert die Kohorten für Hard-Constraints!
                 elective_for=[],
                 required_room_type=None,
                 room_equipment_required=set(),
