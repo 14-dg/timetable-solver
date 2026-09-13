@@ -7,7 +7,7 @@ from solver.models.room import Room, RoomType
 from solver.models.teacher import Teacher
 from solver.models.cohort import Cohort
 from solver.models.solver_config import SolverConfig, ConstraintState
-from custom_types.event_type import EventType
+from solver.models.event_type import EventType
 from solver.solver import UniversityTimetableSolver
 
 def generate_massive_dataset() -> tuple[list[Lecture], list[Room], list[Teacher], list[Cohort]]:
