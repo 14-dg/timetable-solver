@@ -3,9 +3,9 @@ from datetime import date, time
 
 class GridConfigSchema(BaseModel):
     days_per_week: int = 7
-    slot_duration_minutes: int = 45
-    day_start_time: time = time(8, 0)
-    day_end_time: time = time(20, 0)
+    slot_duration_minutes: int
+    day_start_time: time
+    day_end_time: time
 
 class SemesterSchema(BaseModel):
     id: int | None = None
