@@ -13,3 +13,8 @@ def create_redis_client():
 
 def get_redis():
     return redis_client
+
+
+async def close_redis_client():
+    if redis_client:
+        await redis_client.aclose()

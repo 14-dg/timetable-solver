@@ -16,7 +16,7 @@ class RedisKeyBundle:
         return f"{self.base_key}:*"
 
     def one(self, id: UUID):
-        return f"{self.base_key}: {id}"
+        return f"{self.base_key}:{id}"
 
     
 class TimetableRedisKeys:
