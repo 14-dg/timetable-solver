@@ -2,6 +2,9 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
+from core.exceptions.exception_handler import (
+    add_app_exception_handlers,
+)
 from core.redis.redis_client import close_redis_client, create_redis_client
 from features.timetables.timetable_router import timetable_router
 
@@ -24,3 +27,5 @@ app = FastAPI(
 
 
 app.include_router(timetable_router)
+
+add_app_exception_handlers(app)
