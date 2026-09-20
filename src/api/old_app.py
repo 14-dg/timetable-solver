@@ -1,11 +1,12 @@
-from typing import Any
-from fastapi import BackgroundTasks, FastAPI, HTTPException, Depends
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import uuid
+from typing import Any
 
-from api.store import jobs_db
+from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+
 from api.background_task import run_solver_background_task
 from api.schemas.schema import SolveRequestPayload
+from api.store import jobs_db
 
 app = FastAPI()
 
