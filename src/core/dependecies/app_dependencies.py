@@ -1,42 +1,32 @@
-from collections.abc import Callable
-from typing import Any
+from enum import Enum
+from typing import Any, Protocol
 
 
-class AppDependency:
-    def __init__(self, on_create: Callable[..., Any], on_close: Callable[..., Any]):
-        self.on_create = on_create
-        self.on_close = on_close
+class AppDependencies(Enum):
+    REDIS_CLIENT="REDIS_CLIENT"
+    REDIS_QUEUE="REDIS_QUEUE"
 
 
-    def create(self):
-        self.dependency = self.on_create()
+class AppDependency(Protocol):
+    def create(self) -> Any: ...
+    def get_value(self) -> Any: ...
+    def close(self) -> Any: ...
 
 
-    def close(self):
-        self.on_close()
+class AppDependencyRepository:
 
+    def __init__(self):
+        self.dependencies: dict[AppDependencies, AppDependency] = {}
 
-class AppDependencies:
-    def __init__(self, deps: list[AppDependency] | None):
-        if deps:
-            self.deps = deps
-        else:
-            self.deps = []
-
-
-    def add_dependencys(self, deps: list[AppDependency]):
-        self.deps.extend(deps)
-
-
-    def add_dependency(self, dependency: AppDependency):
-        self.deps.append(dependency)
-
-
-    def create(self):
-        for dep in self.deps:
+    def create_deps(self):
+        for dep in vars(self).values():
             dep.create()
 
 
-    def close(self):
-        for dep in self.deps:
+    def get(self, dep: AppDependencies) -> AppDependency:
+        return self.dependencies[dep]
+
+
+    def close_deps(self):
+        for dep in self.dependencies.values():
             dep.close()
