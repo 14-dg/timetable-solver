@@ -33,8 +33,6 @@ async def create_timetable_task(redis: Redis, task_request: TimetableTaskRequest
 
         await pipeline.execute()
 
-        # TODO HIER JOB IN DIE QUEUE LEGEN
-
     return task_status
 
 
@@ -87,7 +85,7 @@ async def update_timetable_task_status(redis: Redis, task_status: TimetableTaskS
         value=task_status.model_dump_json(),
         ex=CONSTANTS.redis_cache_expiry.timetable,
     )
-  
+
 
 async def delete_timetable_task(redis: Redis, task_id: UUID) -> None:
     """deletes requests, status and solutions of a timetable task from redis"""
