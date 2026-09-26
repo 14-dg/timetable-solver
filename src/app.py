@@ -5,18 +5,21 @@ from fastapi import FastAPI
 from core.exceptions.exception_handler import (
     add_app_exception_handlers,
 )
-from core.redis.redis_client import close_redis_client, create_redis_client
+from core.redis.redis_client import RedisClient
+from core.redis.redis_queue import RedisQueue
 from features.timetables.timetable_router import timetable_router
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
 
-    create_redis_client()
+    redis_client = RedisClient()
+    redis_queue = RedisQueue()
 
     yield
 
-    await close_redis_client()
+    await redis_client.close()
+    redis_queue.close()
 
 
 app = FastAPI(
