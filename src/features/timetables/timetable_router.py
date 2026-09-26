@@ -3,8 +3,9 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends
 from redis.asyncio import Redis
+from rq import Queue
 
-from core.redis.redis_client import get_redis
+from core.redis.redis_manager import get_redis_client, get_redis_queue
 from features.timetables.schemas.timetable_task_request import TimetableTaskRequest
 from features.timetables.schemas.timetable_task_solutions import TimetableTaskSolutions
 from features.timetables.schemas.timetable_task_status import TimetableTaskStatus
@@ -16,7 +17,8 @@ from features.timetables.timetable_service import (
     get_timetable_task_status,
 )
 
-Redis_Dep = Annotated[Redis, Depends(get_redis)]
+RedisDep = Annotated[Redis, Depends(get_redis_client)]
+QueueDep = Annotated[Queue, Depends(get_redis_queue)]
 
 timetable_router = APIRouter(
     prefix="/timetable",
@@ -26,22 +28,23 @@ timetable_router = APIRouter(
 
 @timetable_router.post(path="/")
 async def create_timetable(
-    client: Redis_Dep,
+    client: RedisDep,
+    queue: QueueDep,
     task_request: TimetableTaskRequest,
 ) -> TimetableTaskStatus:
-    return await create_timetable_task(client, task_request)
+    return await create_timetable_task(client, queue, task_request)
 
 
 @timetable_router.get(path="/")
 async def get_all_status(
-    client: Redis_Dep,
+    client: RedisDep,
 ) -> list[TimetableTaskStatus]:
-    return await get_all_timetable_tasks_status(client,)
+    return await get_all_timetable_tasks_status(client)
 
 
 @timetable_router.get(path="/{task_id}")
 async def get_status(
-    client: Redis_Dep,
+    client: RedisDep,
     task_id: UUID,
 ) -> TimetableTaskStatus:
     return await get_timetable_task_status(client, task_id)
@@ -49,7 +52,7 @@ async def get_status(
 
 @timetable_router.get(path="/{task_id}/solutions")
 async def get_solutions(
-    client: Redis_Dep,
+    client: RedisDep,
     task_id: UUID,
 ) -> TimetableTaskSolutions:
     return await get_timetable_task_solutions(client, task_id)
@@ -57,7 +60,7 @@ async def get_solutions(
 
 @timetable_router.delete(path="/{task_id}")
 async def cancel_task(
-    client: Redis_Dep,
+    client: RedisDep,
     task_id: UUID,
 ):
     return await delete_timetable_task(client, task_id)
