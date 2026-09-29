@@ -32,9 +32,10 @@ async def create_timetable(
     queue: QueueDep,
     task_request: TimetableTaskRequest,
 ) -> TimetableTaskStatus:
+    queue.enqueue()
     return await create_timetable_task(client, queue, task_request)
 
-
+    
 @timetable_router.get(path="/")
 async def get_all_status(
     client: RedisDep,
