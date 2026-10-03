@@ -1,4 +1,4 @@
-from pydantic import Field
+from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -6,9 +6,12 @@ class Settings(BaseSettings):
     REDIS_CLIENT_URL: str = Field(
         default="redis://localhost:6379/0"
     )
-
     REDIS_QUEUE_URL: str = Field(
         default="redis://localhost:6379/1"
+    )
+    SECRET_KEY: SecretStr = Field(
+        min_length=32,
+        frozen=True,
     )
 
     model_config = SettingsConfigDict(
