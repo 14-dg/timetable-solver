@@ -1,0 +1,15 @@
+.venv
+**/__pycache__
+
+README.md
+test
+wiki
+
+.env
+.key
+.pem
+
+.git/
+
+.dockerignore
+Dockerfile

@@ -10,7 +10,6 @@ dependencies = [
     "ortools>=9.15.6755",
     "pydantic>=2.13.4",
     "pydantic-settings>=2.15.0",
-    "pytest>=9.1.1",
     "redis[hiredis]>=8.1.0",
     "rq>=2.12.0",
     "uvicorn>=0.52.4",
@@ -19,4 +18,5 @@ dependencies = [
 [dependency-groups]
 dev = [
     "faker>=40.36.0",
+    "pytest>=9.1.1",
 ]
