@@ -2,13 +2,13 @@ import logging
 from datetime import UTC, datetime
 from uuid import UUID
 
-
 import httpx
 from redis.asyncio import Redis
 
 from core.exceptions.crud_exceptions import ObjectNotFoundException
 from core.solve.solver_task_request import SolverTaskRequest
 from core.solve.solver_task_status import SolverTaskStatus
+from features.timetables.solver.timetable_solver import TimetableSolver
 from features.timetables.timetable_service import (
     get_timetable_task_request,
     get_timetable_task_status,
@@ -43,7 +43,7 @@ async def run_timetable_task(
     await update_timetable_task_status(redis, task_status)
 
     solver = TimetableSolver()
-    timetable_solutions = 
+    timetable_solutions = solver.solve()
     task_status.completed_at = datetime.now(UTC)
     await set_timetable_task_solutions(redis, timetable_solutions)
     await update_timetable_task_status(redis, task_status)
