@@ -2,7 +2,7 @@ from enum import Enum
 from uuid import UUID
 
 
-class TimetableTaskClasses(Enum):
+class TaskClasses(Enum):
     REQUEST="request"
     SOLUTION="solution"
     STATUS="status"
@@ -18,8 +18,8 @@ class RedisKeyBundle:
     def one(self, id: UUID):
         return f"{self.base_key}:{id}"
 
-    
-class TimetableRedisKeys:
-    request=RedisKeyBundle(TimetableTaskClasses.REQUEST.value)
-    solutions=RedisKeyBundle(TimetableTaskClasses.SOLUTION.value)
-    status=RedisKeyBundle(TimetableTaskClasses.STATUS.value)
+
+class RedisKeys:
+    request=RedisKeyBundle(TaskClasses.REQUEST.value)
+    solutions=RedisKeyBundle(TaskClasses.SOLUTION.value)
+    status=RedisKeyBundle(TaskClasses.STATUS.value)

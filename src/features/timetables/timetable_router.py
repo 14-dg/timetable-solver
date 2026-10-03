@@ -6,17 +6,9 @@ from redis.asyncio import Redis
 from rq import Queue
 
 from core.redis.redis_manager import get_redis_client, get_redis_queue
-from core.solve.solver_task_request import SolverTaskRequest
-from core.solve.solver_task_solutions import SolverTaskSolutions
-from core.solve.solver_task_status import SolverTaskStatus
-from features.timetables.tasks import run_timetable_task
-from features.timetables.timetable_service import (
-    create_timetable_task,
-    delete_timetable_task,
-    get_all_timetable_tasks_status,
-    get_timetable_task_solutions,
-    get_timetable_task_status,
-)
+from core.tasks.solver_task_request import SolverTaskRequest
+from core.tasks.solver_task_solutions import SolverTaskSolutions
+from core.tasks.solver_task_status import SolverTaskStatus
 
 RedisDep = Annotated[Redis, Depends(get_redis_client)]
 QueueDep = Annotated[Queue, Depends(get_redis_queue)]
@@ -33,8 +25,8 @@ async def create_timetable(
     queue: QueueDep,
     task_request: SolverTaskRequest,
 ) -> SolverTaskStatus:
-    task_status = await create_timetable_task(redis_client, task_request)
-    queue.enqueue(run_timetable_task, redis=redis_client, task_id=task_status.task_id) # type: ignore
+    task_status = await create_solver_task(redis_client, task_request)
+    queue.enqueue(run_solver_task, redis_client, task_status.task_id) # type: ignore
     return task_status
 
     
@@ -42,7 +34,7 @@ async def create_timetable(
 async def get_all_status(
     redis_client: RedisDep,
 ) -> list[SolverTaskStatus]:
-    return await get_all_timetable_tasks_status(redis_client)
+    return await get_all_tasks_status(redis_client)
 
 
 @timetable_router.get(path="/{task_id}")
