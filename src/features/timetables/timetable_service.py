@@ -36,11 +36,11 @@ async def create_timetable_task(redis: Redis, task_request: TimetableTaskRequest
     return task_status
 
 
-async def set_timetable_task_solutions(redis: Redis, timetable_solution: TimetableTaskSolutions) -> None:
+async def set_timetable_task_solutions(redis: Redis, timetable_solutions: TimetableTaskSolutions) -> None:
     """sets a solution to a timetable task in redis"""
     await redis.set(
-        name=TimetableRedisKeys.solutions.one(timetable_solution.task_id),
-        value=timetable_solution.model_dump_json(),
+        name=TimetableRedisKeys.solutions.one(timetable_solutions.task_id),
+        value=timetable_solutions.model_dump_json(),
         ex=CONSTANTS.redis_cache_expiry.timetable,
     )
 

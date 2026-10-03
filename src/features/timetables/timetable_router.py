@@ -9,6 +9,7 @@ from core.redis.redis_manager import get_redis_client, get_redis_queue
 from features.timetables.schemas.timetable_task_request import TimetableTaskRequest
 from features.timetables.schemas.timetable_task_solutions import TimetableTaskSolutions
 from features.timetables.schemas.timetable_task_status import TimetableTaskStatus
+from features.timetables.tasks import run_timetable_task
 from features.timetables.timetable_service import (
     create_timetable_task,
     delete_timetable_task,
@@ -28,40 +29,41 @@ timetable_router = APIRouter(
 
 @timetable_router.post(path="/")
 async def create_timetable(
-    client: RedisDep,
+    redis_client: RedisDep,
     queue: QueueDep,
     task_request: TimetableTaskRequest,
 ) -> TimetableTaskStatus:
-    queue.enqueue()
-    return await create_timetable_task(client, queue, task_request)
+    task_status = await create_timetable_task(redis_client, task_request)
+    queue.enqueue(run_timetable_task, redis=redis_client, task_id=task_status.task_id) # type: ignore
+    return task_status
 
     
 @timetable_router.get(path="/")
 async def get_all_status(
-    client: RedisDep,
+    redis_client: RedisDep,
 ) -> list[TimetableTaskStatus]:
-    return await get_all_timetable_tasks_status(client)
+    return await get_all_timetable_tasks_status(redis_client)
 
 
 @timetable_router.get(path="/{task_id}")
 async def get_status(
-    client: RedisDep,
+    redis_client: RedisDep,
     task_id: UUID,
 ) -> TimetableTaskStatus:
-    return await get_timetable_task_status(client, task_id)
+    return await get_timetable_task_status(redis_client, task_id)
 
 
 @timetable_router.get(path="/{task_id}/solutions")
 async def get_solutions(
-    client: RedisDep,
+    redis_client: RedisDep,
     task_id: UUID,
 ) -> TimetableTaskSolutions:
-    return await get_timetable_task_solutions(client, task_id)
+    return await get_timetable_task_solutions(redis_client, task_id)
 
 
 @timetable_router.delete(path="/{task_id}")
 async def cancel_task(
-    client: RedisDep,
+    redis_client: RedisDep,
     task_id: UUID,
 ):
-    return await delete_timetable_task(client, task_id)
+    return await delete_timetable_task(redis_client, task_id)
