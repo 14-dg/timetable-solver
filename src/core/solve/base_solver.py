@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from core.tasks.solver_task_solutions import SolverTaskSolutions
+from core.solve.solver_task_solutions import SolverTaskSolutions
 
 
 class BaseSolver(ABC):

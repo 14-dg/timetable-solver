@@ -13,7 +13,7 @@ async def init_redis():
     global _async_client, _sync_client, _queue
 
     _async_client = AsyncRedis(
-        host=SETTINGS.REDIS_CLIENT_URL,
+        host=SETTINGS.REDIS_URL,
         decode_responses=True,
         db=0,
     )

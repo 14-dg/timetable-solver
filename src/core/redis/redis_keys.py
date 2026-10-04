@@ -1,25 +1,28 @@
 from enum import Enum
+from typing import Literal
 from uuid import UUID
 
-
-class TaskClasses(Enum):
-    REQUEST="request"
-    SOLUTION="solution"
-    STATUS="status"
+from core.config.settings import SETTINGS
 
 
-class RedisKeyBundle:
-    def __init__(self, base_key: str):
-        self.base_key = base_key
+class TaskDataKeys(Enum):
+    request="request"
+    status="status"
+    solutions="solutions"
 
-    def all(self):
-        return f"{self.base_key}:*"
-
-    def one(self, id: UUID):
-        return f"{self.base_key}:{id}"
+type DomainType = Literal["timetable"]
 
 
 class RedisKeys:
-    request=RedisKeyBundle(TaskClasses.REQUEST.value)
-    solutions=RedisKeyBundle(TaskClasses.SOLUTION.value)
-    status=RedisKeyBundle(TaskClasses.STATUS.value)
+    def __init__(self, domain: DomainType):
+        self._domain: DomainType = domain
+
+    def task(self, id: UUID) -> str:
+        return f"{SETTINGS.REDIS_KEY_PREFIX}:{self._domain}:task:{id}"
+
+    def task_pattern(self):
+        return f"{SETTINGS.REDIS_KEY_PREFIX}:{self._domain}:task:*"
+
+
+# die key objekte für die features/domains
+TIMETABLE_KEYS = RedisKeys("timetable")

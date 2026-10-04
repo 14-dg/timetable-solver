@@ -1,12 +1,22 @@
 from dataclasses import dataclass
 
 
-@dataclass(frozen=True)
-class RedisCacheExpiry:
+@dataclass
+class RedisCacheExpiryLength:
     """
     Die dauer in Sekunden, wie lange Einträge in Redis gespeichert werden
     """
-    timetable: int = 60 * 60 * 24 # 24 stunden
+    pending: int
+    completed: int
+    failed: int
+
+@dataclass(frozen=True)
+class RedisCacheExpiry:
+    timetable = RedisCacheExpiryLength(
+        pending=60 * 30, # 30 minuten
+        completed=60 * 60 * 24 * 2, # 48 stunden / 2 tage
+        failed=60 * 15, # 15 minuten
+    )
 
 
 dataclass(frozen=True)

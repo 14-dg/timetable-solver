@@ -3,11 +3,15 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    REDIS_CLIENT_URL: str = Field(
+    REDIS_URL: str = Field(
         default="redis://localhost:6379/0"
     )
     REDIS_QUEUE_URL: str = Field(
         default="redis://localhost:6379/1"
+    )
+    REDIS_KEY_PREFIX: str = Field(
+        default="solver",
+        description="Das prefix jedes Redis-Keys, der zu dieser Anwendung gehört.",
     )
     SECRET_KEY: SecretStr = Field(
         min_length=32,
@@ -20,4 +24,4 @@ class Settings(BaseSettings):
     )
 
 
-SETTINGS = Settings()
+SETTINGS = Settings() # type: ignore
