@@ -7,4 +7,8 @@ class BaseSolver(ABC):
 
     @abstractmethod
     def solve(self) -> SolverTaskSolutions:
+        """
+        Raises:
+            SolverError
+        """
         raise NotImplementedError("Subclass needs to implement this!")

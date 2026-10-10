@@ -7,6 +7,7 @@ from redis.asyncio import Redis
 
 from core.exceptions.crud_exceptions import ObjectNotFoundException
 from core.redis.redis_manager import get_redis_client
+from core.solve.exceptions import SolverException
 from core.solve.solver_task_request import SolverTaskRequest
 from core.solve.solver_task_solutions import SolverTaskSolutions
 from core.solve.solver_task_status import SolverTaskStatus
@@ -49,10 +50,10 @@ async def _run_timetable_solver_task(task_id: UUID) -> None:
         await set_timetable_task_solutions(redis, task_id, solutions)
         task_status.status = "Completed"
         
-    except SolverError as e:
+    except SolverException:
         task_status.completed_at = datetime.now(UTC)
         task_status.status = "Failed"
-        logger.error(f"Solver Error in Task {task_id}")
+        logger.exception(f"Solver Error in Task {task_id}")
 
     await update_timetable_task_status(redis, task_id, task_status)
 
