@@ -3,5 +3,5 @@ COPY . /app
 ENV UV_NO_DEV=1
 WORKDIR /app
 RUN uv sync --locked
-EXPOSE 
-CMD ["uv", "run", ""]
+EXPOSE 7000
+CMD ["uv", "run", "__main__.py"]

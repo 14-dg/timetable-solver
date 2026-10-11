@@ -1,8 +1,8 @@
-from massive_test import run_massive_test
+from app import start_app
 
 
 def main():
-    run_massive_test()
+    start_app()
 
 
 if __name__ == "__main__":

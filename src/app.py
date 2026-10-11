@@ -1,7 +1,9 @@
 from contextlib import asynccontextmanager
 
+import uvicorn
 from fastapi import FastAPI
 
+from core.config.settings import SETTINGS
 from core.exceptions.exception_handler import (
     add_app_exception_handlers,
 )
@@ -29,3 +31,7 @@ app = FastAPI(
 app.include_router(timetable_router)
 
 add_app_exception_handlers(app)
+
+
+def start_app():
+    uvicorn.run("apiexporter.app:app", host="0.0.0.0", port=SETTINGS.APP_PORT, reload=False)
