@@ -14,8 +14,8 @@ class Lecture(BaseModel):
         ge=1,
         le=7,
     )
-    timeslot_duration: int = Field(
-        description="The duration in cohesive timeslots one lecture instance takes",
+    duration: int = Field(
+        description="The duration in consecutive timeslots one lecture instance takes",
         ge=1,
     )
     teacher: Teacher = Field(description="The Teacher who teaches the lecture")

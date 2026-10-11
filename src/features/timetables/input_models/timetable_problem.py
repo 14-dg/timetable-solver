@@ -81,9 +81,9 @@ class TimetableProblem(BaseModel):
     @model_validator(mode="after")
     def validate_max_lecture_duration(self) -> Self:
         for lecture in self.lectures:
-            if lecture.timeslot_duration > self.time_grid.slots_per_day:
+            if lecture.duration > self.time_grid.slots_per_day:
                 raise ValueError(
-                    f"""Lecture [{lecture.name}] has invalid timeslot_duration value:
-                    \n{lecture.timeslot_duration} exceeds the daily amount of timeslots [{self.time_grid.slots_per_day}]"""
+                    f"""Lecture [{lecture.name}] has invalid duration value:
+                    \n{lecture.duration} exceeds the daily amount of timeslots [{self.time_grid.slots_per_day}]"""
                 )
         return self
