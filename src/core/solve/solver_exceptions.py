@@ -1,7 +1,7 @@
 from uuid import UUID
 
 
-class SolverException(Exception):
+class SolverTaskException(Exception):
     def __init__(
         self,
         task_id: UUID,
@@ -9,3 +9,10 @@ class SolverException(Exception):
     ):
         self.task_id = task_id
         self.message = message
+
+
+class PreproccessingException(SolverTaskException):
+    def __init__(
+            self,
+    ):
+        pass

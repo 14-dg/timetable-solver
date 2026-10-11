@@ -4,4 +4,6 @@ from pydantic import BaseModel
 
 
 class BaseSolution(ABC, BaseModel):
-    pass
+    """
+    Base Solution for all Solvers.
+    """

@@ -11,12 +11,20 @@ class Settings(BaseSettings):
     )
     REDIS_KEY_PREFIX: str = Field(
         default="solver",
-        description="Das prefix jedes Redis-Keys, der zu dieser Anwendung gehört.",
+        description="The prefix of every Redis-Key, that belongs to this App.",
     )
     SECRET_KEY: SecretStr = Field(
         min_length=32,
         frozen=True,
     )
+    APP_PORT: int = Field(
+        description="The port the uvicorn server uses to run the App.",
+        default=7000,
+        ge=7000,
+        le=8000,
+        validate_default=True,
+    )
+
 
     model_config = SettingsConfigDict(
         env_file=".env",

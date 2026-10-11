@@ -7,7 +7,7 @@ from redis.asyncio import Redis
 
 from core.exceptions.crud_exceptions import ObjectNotFoundException
 from core.redis.redis_manager import get_redis_client
-from core.solve.exceptions import SolverException
+from core.solve.solver_exceptions import SolverException
 from core.solve.solver_task_request import SolverTaskRequest
 from core.solve.solver_task_solutions import SolverTaskSolutions
 from core.solve.solver_task_status import SolverTaskStatus
