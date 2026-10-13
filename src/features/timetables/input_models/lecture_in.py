@@ -2,11 +2,11 @@ from uuid import uuid4
 
 from pydantic import BaseModel, Field
 
-from features.timetables.input_models.teacher import Teacher
+from features.timetables.input_models.teacher_in import TeacherIn
 from features.timetables.types import UniqueID
 
 
-class Lecture(BaseModel):
+class LectureIn(BaseModel):
     id: UniqueID = Field(default_factory=uuid4)
     name: str = Field(description="The name of the lecture")
     times_per_week: int = Field(
@@ -18,4 +18,4 @@ class Lecture(BaseModel):
         description="The duration in consecutive timeslots one lecture instance takes",
         ge=1,
     )
-    teacher: Teacher = Field(description="The Teacher who teaches the lecture")
+    teacher: TeacherIn = Field(description="The Teacher who teaches the lecture")

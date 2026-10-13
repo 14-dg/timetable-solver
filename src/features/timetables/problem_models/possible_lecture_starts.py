@@ -3,9 +3,9 @@ from dataclasses import dataclass
 from typing import Self
 
 from core.preprocessing.exceptions import InfeasibleProblemException
-from features.timetables.input_models.lecture import Lecture
-from features.timetables.input_models.room import Room
-from features.timetables.input_models.time_grid import TimeGrid
+from features.timetables.input_models.lecture_in import LectureIn
+from features.timetables.input_models.room_in import RoomIn
+from features.timetables.input_models.time_grid_in import TimeGridIn
 from features.timetables.input_models.timetable_problem import TimetableProblem
 
 logger = logging.getLogger(__name__)
@@ -19,7 +19,7 @@ class PossibleLectureStarts:
 
 
     @staticmethod
-    def _valid_starts(lecture: Lecture, available: set[int], time_grid: TimeGrid) -> frozenset[int]:
+    def _valid_starts(lecture: LectureIn, available: set[int], time_grid: TimeGridIn) -> frozenset[int]:
         last_offset: int = lecture.duration - 1
         return frozenset(
             start
@@ -33,7 +33,7 @@ class PossibleLectureStarts:
 
 
     @classmethod
-    def _room_starts(cls, rooms: list[Room], lecture: Lecture, time_grid: TimeGrid) -> dict[int, frozenset[int]]:
+    def _room_starts(cls, rooms: list[RoomIn], lecture: LectureIn, time_grid: TimeGridIn) -> dict[int, frozenset[int]]:
         # tmp for possible starts for a single lecture for multiple rooms
         room_starts: dict[int, frozenset[int]] = {}
         for room_index, room in enumerate(rooms):
@@ -58,7 +58,7 @@ class PossibleLectureStarts:
     @classmethod
     def from_problem(cls, problem: TimetableProblem) -> list[Self]:
         result: list[Self] = []
-        unplaceable: list[Lecture] = []
+        unplaceable: list[LectureIn] = []
         for lecture_index, lecture in enumerate(problem.lectures):
             room_starts: dict[int, frozenset[int]] = cls._room_starts(problem.rooms, lecture, problem.time_grid)
             if room_starts:

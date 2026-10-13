@@ -2,16 +2,16 @@ from typing import Self
 
 from pydantic import BaseModel, Field, model_validator
 
-from features.timetables.input_models.lecture import Lecture
-from features.timetables.input_models.room import Room
-from features.timetables.input_models.time_grid import TimeGrid
+from features.timetables.input_models.lecture_in import LectureIn
+from features.timetables.input_models.room_in import RoomIn
+from features.timetables.input_models.time_grid_in import TimeGridIn
 from features.timetables.types import UniqueID
 
 
 class TimetableProblem(BaseModel):
-    lectures: list[Lecture] = Field()
-    rooms: list[Room] = Field()
-    time_grid: TimeGrid = Field()
+    lectures: list[LectureIn] = Field()
+    rooms: list[RoomIn] = Field()
+    time_grid: TimeGridIn = Field()
 
 
     @model_validator(mode="after")

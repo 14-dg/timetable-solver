@@ -1,15 +1,12 @@
 from datetime import UTC, datetime
-from typing import TypedDict
 
 from pydantic import Field
 
 from core.solve.base_solution import BaseSolution
-
-
-class LectureRoomMapping(TypedDict):
-    ...
+from features.timetables.output_models.lecture_out import LectureOut
+from features.timetables.types import UniqueID
 
 
 class TimetableSolution(BaseSolution):
-
+    lectures: dict[UniqueID, LectureOut] = Field(description="The assignement of each lecture to a room")
     timestamp: datetime = Field(default_factory=lambda _: datetime.now(UTC), description="The time the solution was created.")

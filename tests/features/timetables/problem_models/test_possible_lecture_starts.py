@@ -1,12 +1,12 @@
 import pytest
 
 from core.preprocessing.exceptions import InfeasibleProblemException
-from features.timetables.input_models.lecture import Lecture
-from features.timetables.input_models.room import Room
-from features.timetables.input_models.teacher import Teacher
-from features.timetables.input_models.time_grid import TimeGrid
+from features.timetables.input_models.lecture_in import LectureIn
+from features.timetables.input_models.room_in import RoomIn
+from features.timetables.input_models.teacher_in import TeacherIn
+from features.timetables.input_models.time_grid_in import TimeGridIn
 from features.timetables.input_models.timetable_problem import TimetableProblem
-from features.timetables.problem_model_models.possible_lecture_starts import (
+from features.timetables.problem_models.possible_lecture_starts import (
     PossibleLectureStarts,
 )
 
@@ -17,13 +17,13 @@ def make_problem(
     duration: int,
     slots_per_day: int = 4,
 ) -> TimetableProblem:
-    teacher = Teacher(name="alice", availability=teacher_slots)
-    lecture = Lecture(name="lec", times_per_week=1, duration=duration, teacher=teacher)
-    rooms: list[Room] = [Room(name=f"r{i}", availability=s) for i, s in enumerate(rooms_slots)]
+    teacher = TeacherIn(name="alice", availability=teacher_slots)
+    lecture = LectureIn(name="lec", times_per_week=1, duration=duration, teacher=teacher)
+    rooms: list[RoomIn] = [RoomIn(name=f"r{i}", availability=s) for i, s in enumerate(rooms_slots)]
     return TimetableProblem(
         lectures=[lecture],
         rooms=rooms,
-        time_grid=TimeGrid(days=5, slots_per_day=slots_per_day),
+        time_grid=TimeGridIn(days=5, slots_per_day=slots_per_day),
     )
 
 

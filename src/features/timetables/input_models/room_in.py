@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field
 from features.timetables.types import UniqueID
     
 
-class Room(BaseModel):
+class RoomIn(BaseModel):
     id: UniqueID | int = Field(default_factory=uuid4)
     name: str = Field(description="The name of the room.")
     availability: set[int] = Field(
@@ -21,6 +21,6 @@ class Room(BaseModel):
 
 
     def __eq__(self, obj: object) -> bool:
-        if not isinstance(obj, Room):
+        if not isinstance(obj, RoomIn):
             return False
         return obj.id == self.id

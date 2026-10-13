@@ -18,7 +18,7 @@ from features.timetables.timetable_service import (
     set_timetable_task_solutions,
     update_timetable_task_status,
 )
-from features.timetables.timetable_solver import TimetableSolver
+from features.timetables.solver.timetable_solver import TimetableSolver
 
 logger = logging.getLogger(__name__)
 

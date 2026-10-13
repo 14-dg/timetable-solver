@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 
 
-class TimeGrid(BaseModel):
+class TimeGridIn(BaseModel):
     days: int = Field(
         default=5,
         ge=5,
