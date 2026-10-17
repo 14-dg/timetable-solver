@@ -4,8 +4,8 @@ from typing import final
 from ortools.sat.python import cp_model
 from ortools.sat.python.cp_model_helper import CpSolverStatus
 
-from core.preprocessing.exceptions import InfeasibleProblemException
 from core.solve.base_solver import BaseSolver
+from core.solve.solver_exceptions import InfeasibleProblemException
 from core.solve.solver_task_solutions import SolverTaskSolutions
 from features.timetables.input_models.lecture_in import LectureIn
 from features.timetables.input_models.room_in import RoomIn
@@ -18,6 +18,10 @@ from features.timetables.output_models.timetable_solution import TimetableSoluti
 from features.timetables.problem_models.possible_lecture_starts import (
     PossibleLectureStarts,
 )
+from features.timetables.solver.check_solution import (
+    assert_all_lecture_occurences_included,
+    assert_no_overlap,
+)
 from features.timetables.types import UniqueID
 
 VarKey = tuple[int, int, int, int]
@@ -29,11 +33,11 @@ class TimetableSolver(BaseSolver):
         self,
         problem_data: TimetableProblem,
     ) -> None:
-        self._problem_data: TimetableProblem = problem_data
+        self._problem: TimetableProblem = problem_data
         self._solver = cp_model.CpSolver()
-        self._possible_lecture_starts: list[PossibleLectureStarts] = PossibleLectureStarts.from_problem(self._problem_data)
-        self._model: cp_model.CpModel = self.build_model()
+        self._possible_lecture_starts: list[PossibleLectureStarts] = PossibleLectureStarts.from_problem(self._problem)
         self._x: dict[VarKey, cp_model.IntVar] = {}
+        self._model: cp_model.CpModel = self.build_model()
 
     def build_model(self) -> cp_model.CpModel:
         model = cp_model.CpModel()
@@ -43,7 +47,7 @@ class TimetableSolver(BaseSolver):
 
         for possible in self._possible_lecture_starts:
             lecture_index = possible.lecture_index
-            lecture = self._problem_data.lectures[lecture_index]
+            lecture = self._problem.lectures[lecture_index]
             for occurrence in range(lecture.times_per_week):
                 for room_index, starts in possible.room_starts.items():
                     for start in sorted(starts):
@@ -65,18 +69,18 @@ class TimetableSolver(BaseSolver):
         return model
 
 
-    def build_solution(self) -> TimetableSolution:
+    def build_solution(self, solution_quality: CpSolverStatus) -> TimetableSolution:
         lecture_assignemnts: dict[UniqueID, LectureOut] = {}
         output_rooms: dict[UniqueID, RoomOut] = {}
         output_teachers: dict[UniqueID, TeacherOut] = {
             lec.teacher.id: TeacherOut(id=lec.teacher.id, name=lec.teacher.name)
-            for lec in self._problem_data.lectures
+            for lec in self._problem.lectures
         }
         for key, val in self._x.items():
             if self._solver.value(val) == 1:
                 lecture_i, _, room_i, start = key
-                lecture_input: LectureIn = self._problem_data.lectures[lecture_i]
-                room_input: RoomIn = self._problem_data.rooms[room_i]
+                lecture_input: LectureIn = self._problem.lectures[lecture_i]
+                room_input: RoomIn = self._problem.rooms[room_i]
 
                 # output room objekt erstellen und speichern
                 if room_input.id in output_rooms:
@@ -101,11 +105,12 @@ class TimetableSolver(BaseSolver):
                         ]
                     )
 
-        return TimetableSolution(lectures=lecture_assignemnts)
+        return TimetableSolution(lectures=lecture_assignemnts, solution_quality=solution_quality)
 
 
-    def check_solution(self, solution: TimetableSolution, problem : TimetableProblem):
-        pass
+    def check_solution(self, solution: TimetableSolution, problem: TimetableProblem):
+        assert_all_lecture_occurences_included(solution, problem.lectures)
+        assert_no_overlap(solution)
 
 
     def solve(self) -> SolverTaskSolutions:
@@ -113,9 +118,9 @@ class TimetableSolver(BaseSolver):
         status: CpSolverStatus = self._solver.solve(self._model)
 
         if status in (cp_model.OPTIMAL, cp_model.FEASIBLE):
-            solution: TimetableSolution = self.build_solution()
+            solution: TimetableSolution = self.build_solution(status)
 
-            self.check_solution(solution)
+            self.check_solution(solution, self._problem)
 
             return SolverTaskSolutions(
                 solutions={
@@ -123,8 +128,8 @@ class TimetableSolver(BaseSolver):
                 }
             )
 
-            
         if status == cp_model.INFEASIBLE:
+
             raise InfeasibleProblemException(
                 message="No timetable satisfies all constraints.", details={}
             )
