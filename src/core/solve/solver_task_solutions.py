@@ -7,5 +7,5 @@ class SolverTaskSolutions(BaseModel):
     solutions: dict[int, BaseSolution] = Field(default={})
 
 
-    def set_solution(self, solution: BaseSolution):
-        self.solutions[] = solution
+    def set_solution(self, solutions:BaseSolution):
+        self.solutions[len(self.solutions)] = solutions
