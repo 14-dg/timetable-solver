@@ -2,7 +2,7 @@ import logging
 from dataclasses import dataclass
 from typing import Self
 
-from core.preprocessing.exceptions import InfeasibleProblemException
+from core.solve.solver_exceptions import InfeasibleProblemException
 from features.timetables.input_models.lecture_in import LectureIn
 from features.timetables.input_models.room_in import RoomIn
 from features.timetables.input_models.time_grid_in import TimeGridIn
@@ -43,7 +43,7 @@ class PossibleLectureStarts:
             valid_starts: frozenset[int] = cls._valid_starts(lecture, mutually_available_slots, time_grid)
             if valid_starts:
                 room_starts[room_index] = valid_starts
-        return room_starts
+                
         if not room_starts:
             raise InfeasibleProblemException(
                 message=f"No possible rooms for lecture [{lecture.name}] [{lecture.id}] found.",
