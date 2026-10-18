@@ -69,8 +69,8 @@ class TimetableSolver(BaseSolver):
         return model
 
 
-    def build_solution(self, solution_quality: CpSolverStatus) -> TimetableSolution:
-        lecture_assignemnts: dict[UniqueID, LectureOut] = {}
+    def build_solution(self) -> TimetableSolution:
+        output_lectures: dict[UniqueID, LectureOut] = {}
         output_rooms: dict[UniqueID, RoomOut] = {}
         output_teachers: dict[UniqueID, TeacherOut] = {
             lec.teacher.id: TeacherOut(id=lec.teacher.id, name=lec.teacher.name)
@@ -89,8 +89,8 @@ class TimetableSolver(BaseSolver):
                     output_room = RoomOut(id=room_input.id, name=room_input.name)
                     output_rooms[room_input.id] = output_room
                 
-                if lecture_input.id in lecture_assignemnts:
-                    lecture_out: LectureOut = lecture_assignemnts[lecture_input.id]
+                if lecture_input.id in output_lectures:
+                    lecture_out: LectureOut = output_lectures[lecture_input.id]
                     lecture_out.assignments.append(
                         Assignment(output_room, start=start, end=start+lecture_input.duration)
                     )
@@ -101,16 +101,17 @@ class TimetableSolver(BaseSolver):
                         name=lecture_input.name,
                         teacher=output_teachers[lecture_input.teacher.id],
                         assignments=[
-                            Assignment(output_room, start=start, end=start+lecture_input.duration)
+                            Assignment(output_room, start=start, end=start+lecture_input.duration - 1)
                         ]
                     )
+                    output_lectures[lecture_out.id] = lecture_out
 
-        return TimetableSolution(lectures=lecture_assignemnts, solution_quality=solution_quality)
+        return TimetableSolution(lectures=output_lectures)
 
 
     def check_solution(self, solution: TimetableSolution, problem: TimetableProblem):
         assert_all_lecture_occurences_included(solution, problem.lectures)
-        assert_no_overlap(solution)
+        assert_no_overlap(solution, self._problem)
 
 
     def solve(self) -> SolverTaskSolutions:
@@ -118,13 +119,13 @@ class TimetableSolver(BaseSolver):
         status: CpSolverStatus = self._solver.solve(self._model)
 
         if status in (cp_model.OPTIMAL, cp_model.FEASIBLE):
-            solution: TimetableSolution = self.build_solution(status)
+            solution: TimetableSolution = self.build_solution()
 
             self.check_solution(solution, self._problem)
 
             return SolverTaskSolutions(
                 solutions={
-                    1: solution
+                    0: solution
                 }
             )
 

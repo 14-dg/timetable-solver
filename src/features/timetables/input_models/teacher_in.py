@@ -23,4 +23,10 @@ class TeacherIn(BaseModel):
     def __eq__(self, obj: object) -> bool:
         if not isinstance(obj, TeacherIn):
             return False
-        return obj.id == self.id
+        if not obj.id == self.id:
+            return False
+
+        if not self.name == obj.name:
+            return False
+
+        return self.availability == obj.availability

@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field, model_validator
 
 from features.timetables.input_models.lecture_in import LectureIn
 from features.timetables.input_models.room_in import RoomIn
+from features.timetables.input_models.teacher_in import TeacherIn
 from features.timetables.input_models.time_grid_in import TimeGridIn
 from features.timetables.types import UniqueID
 
@@ -41,13 +42,14 @@ class TimetableProblem(BaseModel):
         """
         Ensure that all teachers have unique IDs to avoid conflicts.
         """
-        teacher_ids: set[UniqueID] = set()
+        teachers: dict[UniqueID, TeacherIn] = {}
 
         for lecture in self.lectures:
-            if lecture.teacher.id in teacher_ids:
-                raise ValueError("Teacher IDs must be unique.")
-            else:
-                teacher_ids.add(lecture.teacher.id)
+            if not lecture.teacher.id in teachers:
+                teachers[lecture.teacher.id] = lecture.teacher
+                continue
+            elif lecture.teacher != teachers[lecture.teacher.id]:
+                raise ValueError("Teacher IDs must be unique for different teachers.")
         return self
 
 
