@@ -4,6 +4,9 @@ probedatei.py
 # sql datenschema
 external_data_scheme
 
+# docker
+docker-compose-override.yaml
+
 # pycache
 *.pyc
 __pycache__
