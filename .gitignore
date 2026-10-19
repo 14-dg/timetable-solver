@@ -5,7 +5,7 @@ probedatei.py
 external_data_scheme
 
 # docker
-docker-compose-override.yaml
+docker-compose.override.yaml
 
 # pycache
 *.pyc
