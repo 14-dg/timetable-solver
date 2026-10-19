@@ -19,7 +19,7 @@ class RedisCacheExpiry:
     )
 
 
-dataclass(frozen=True)
+@dataclass(frozen=True)
 class SolverSettings:
     DEFAULT_SOLVER_TIMEOUT: int = 60 # 60 Sekunden
 

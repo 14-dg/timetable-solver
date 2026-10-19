@@ -30,19 +30,19 @@ timetable_router = APIRouter(
 )
 
 
-@timetable_router.post(path="/", response_model=SolverTaskStatus)
+@timetable_router.post(path="/", response_model=tuple[str, SolverTaskStatus])
 async def create_timetable(
     redis_client: RedisDep,
     queue: QueueDep,
     task_request: TimetableTaskRequest,
-) -> SolverTaskStatus:
+) -> tuple[str, SolverTaskStatus]:
     task_data: TaskData[TimetableSolution, TimetableTaskRequest] = await create_timetable_task(redis_client, task_request)
     queue.enqueue( # type: ignore
         run_timetable_solver_task,
         task_data.task_id,
         job_id=str(task_data.task_id),
     )
-    return task_data.status
+    return (str(task_data.task_id), task_data.status)
 
     
 @timetable_router.get(path="/", response_model=list[SolverTaskStatus])

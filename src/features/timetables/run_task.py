@@ -6,7 +6,7 @@ from uuid import UUID
 from redis.asyncio import Redis
 
 from core.exceptions.crud_exceptions import ObjectNotFoundException
-from core.redis.redis_manager import get_redis_client
+from core.redis.redis_manager import create_async_redis_client
 from core.solve.solver_exceptions import SolverTaskException
 from core.solve.solver_task_solutions import SolverTaskSolutions
 from core.solve.solver_task_status import SolverTaskStatus
@@ -34,7 +34,16 @@ def run_timetable_solver_task(task_id: UUID) -> None:
 
 
 async def _run_timetable_solver_task(task_id: UUID) -> None:
-    redis: Redis = get_redis_client()
+    # der worker ist ein eigener prozess ohne fastapi lifespan, deshalb eigener client.
+    # pro task neu, weil asyncio.run() jedes mal einen neuen event loop startet
+    redis: Redis = create_async_redis_client()
+    try:
+        await _solve_and_store(redis, task_id)
+    finally:
+        await redis.aclose()
+
+
+async def _solve_and_store(redis: Redis, task_id: UUID) -> None:
     try:
         task_status: SolverTaskStatus = await get_timetable_task_status(redis, task_id)
         task_request: TimetableTaskRequest = await get_timetable_task_request(redis, task_id)

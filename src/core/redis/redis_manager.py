@@ -4,25 +4,31 @@ from rq import Queue
 
 from core.config.settings import SETTINGS
 
+# muss mit dem queue namen im worker command (docker-compose.yaml) übereinstimmen
+TASK_QUEUE_NAME = "task_queue"
+
 _async_client: AsyncRedis | None = None
 _sync_client: SyncRedis | None = None
 _queue: Queue | None = None
 
+
+def create_async_redis_client() -> AsyncRedis:
+    """
+    erstellt einen neuen async redis client.
+    die db nummer ist teil der url (redis://host:port/db)
+    """
+    return AsyncRedis.from_url(SETTINGS.REDIS_URL, decode_responses=True)
+
+
 async def init_redis():
-    
+
     global _async_client, _sync_client, _queue
 
-    _async_client = AsyncRedis(
-        host=SETTINGS.REDIS_URL,
-        decode_responses=True,
-        db=0,
-    )
-    
-    _sync_client = SyncRedis(
-        SETTINGS.REDIS_QUEUE_URL,
-        db=1,
-    )
-    _queue = Queue(name="task_queue", connection=_sync_client)
+    _async_client = create_async_redis_client()
+
+    # rq braucht bytes, deshalb hier kein decode_responses
+    _sync_client = SyncRedis.from_url(SETTINGS.REDIS_QUEUE_URL)
+    _queue = Queue(name=TASK_QUEUE_NAME, connection=_sync_client)
 
 async def close_redis():
     if _async_client:

@@ -1,15 +1,21 @@
 .venv
 **/__pycache__
+.pytest_cache
 
 README.md
-test
+tests
 wiki
+external_data_scheme
 
 .env
-.key
-.pem
+.env.example
+
+*.key
+*.pem
 
 .git/
 
 .dockerignore
 Dockerfile
+
+probedatei

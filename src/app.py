@@ -34,4 +34,4 @@ add_app_exception_handlers(app)
 
 
 def start_app():
-    uvicorn.run("apiexporter.app:app", host="0.0.0.0", port=SETTINGS.APP_PORT, reload=False)
+    uvicorn.run("app:app", host="0.0.0.0", port=SETTINGS.APP_PORT, reload=False)
