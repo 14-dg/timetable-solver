@@ -8,12 +8,13 @@ from core.redis.redis_keys import TIMETABLE_KEYS, TaskDataKeys
 from core.solve.solver_task_solutions import SolverTaskSolutions
 from core.solve.solver_task_status import SolverTaskStatus
 from core.solve.task_data import TaskData
-from features.timetables.timetable_solver_task_request import TimetableSolverTaskRequest
+from features.timetables.output_models.timetable_solution import TimetableSolution
+from features.timetables.timetable_task_request import TimetableTaskRequest
 
 
-async def create_timetable_task(redis: Redis, task_request: TimetableSolverTaskRequest) -> TaskData:
+async def create_timetable_task(redis: Redis, task_request: TimetableTaskRequest) -> TaskData[TimetableSolution, TimetableTaskRequest]:
     """creates a timetable task request and status in redis"""
-    task_data = TaskData(request=task_request)
+    task_data = TaskData[TimetableSolution, TimetableTaskRequest](request=task_request)
     task_key = TIMETABLE_KEYS.task(task_data.task_id)
     async with redis.pipeline() as pipe:
         await pipe.hset(
@@ -30,7 +31,7 @@ async def create_timetable_task(redis: Redis, task_request: TimetableSolverTaskR
     return task_data
 
 
-async def set_timetable_task_solutions(redis: Redis, task_id: UUID, solutions: SolverTaskSolutions) -> None:
+async def set_timetable_task_solutions(redis: Redis, task_id: UUID, solutions: SolverTaskSolutions[TimetableSolution]) -> None:
     """sets solutions of a timetable task in redis"""
     task_key = TIMETABLE_KEYS.task(task_id)
     await redis.hset(
@@ -40,17 +41,17 @@ async def set_timetable_task_solutions(redis: Redis, task_id: UUID, solutions: S
     )
 
 
-async def get_timetable_task_data(redis: Redis, task_id: UUID) -> TaskData:
+async def get_timetable_task_data(redis: Redis, task_id: UUID) -> TaskData[TimetableSolution, TimetableTaskRequest]:
     """retrieves timetable tasks data (request, status, solutions)"""
     task_key = TIMETABLE_KEYS.task(task_id)
     data = await redis.hgetall(task_key)
     if not data:
         raise ObjectNotFoundException(task_id)
     
-    return TaskData.model_validate(data)
+    return TaskData[TimetableSolution, TimetableTaskRequest].model_validate(data)
 
 
-async def get_timetable_task_request(redis: Redis, task_id: UUID) -> TimetableSolverTaskRequest:
+async def get_timetable_task_request(redis: Redis, task_id: UUID) -> TimetableTaskRequest:
     """retrieves a timetable task request"""
     task_key = TIMETABLE_KEYS.task(task_id)
     request_data = await redis.hget(
@@ -59,7 +60,7 @@ async def get_timetable_task_request(redis: Redis, task_id: UUID) -> TimetableSo
     )
     if not request_data:
         raise ObjectNotFoundException(task_id)
-    return TimetableSolverTaskRequest.model_validate_json(request_data)
+    return TimetableTaskRequest.model_validate_json(request_data)
 
 
 async def get_timetable_task_status(redis: Redis, task_id: UUID) -> SolverTaskStatus:
@@ -74,7 +75,7 @@ async def get_timetable_task_status(redis: Redis, task_id: UUID) -> SolverTaskSt
     return SolverTaskStatus.model_validate_json(status_data)
 
 
-async def get_timetable_task_solutions(redis: Redis, task_id: UUID) -> SolverTaskSolutions:
+async def get_timetable_task_solutions(redis: Redis, task_id: UUID) -> SolverTaskSolutions[TimetableSolution]:
     """retrieves a timetable tasks solutions"""
     task_key = TIMETABLE_KEYS.task(task_id)
     solutions_data = await redis.hget(
@@ -83,7 +84,7 @@ async def get_timetable_task_solutions(redis: Redis, task_id: UUID) -> SolverTas
     )
     if not solutions_data:
         raise ObjectNotFoundException(task_id)
-    return SolverTaskSolutions.model_validate_json(solutions_data)
+    return SolverTaskSolutions[TimetableSolution].model_validate_json(solutions_data)
 
 
 async def get_all_timetable_tasks_statuses(redis: Redis) -> list[SolverTaskStatus]:

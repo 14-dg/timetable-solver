@@ -6,7 +6,7 @@ from features.timetables.types import UniqueID
     
 
 class RoomIn(BaseModel):
-    id: UniqueID | int = Field(default_factory=uuid4)
+    id: UniqueID = Field(default_factory=uuid4)
     name: str = Field(description="The name of the room.")
     availability: set[int] = Field(
         description="The timeslots in during which the room is available for use.",
@@ -14,7 +14,7 @@ class RoomIn(BaseModel):
     )
 
 
-    def __hash__(self) -> UniqueID:
+    def __hash__(self) -> int:
         if isinstance(self.id, UUID):
             return self.id.int
         return self.id

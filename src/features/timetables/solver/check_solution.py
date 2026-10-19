@@ -1,3 +1,4 @@
+from core.solve.solver_exceptions import SolverSolutionException
 from features.timetables.input_models.lecture_in import LectureIn
 from features.timetables.input_models.room_in import RoomIn
 from features.timetables.input_models.teacher_in import TeacherIn
@@ -6,9 +7,14 @@ from features.timetables.output_models.timetable_solution import TimetableSoluti
 from features.timetables.types import UniqueID
 
 
-def assert_all_lecture_occurences_included(solution: TimetableSolution, lectures_in: list[LectureIn]):
+def assert_all_lecture_occurrences_included(solution: TimetableSolution, lectures_in: list[LectureIn]):
     for lec in lectures_in:
-        assert len(solution.lectures[lec.id].assignments) == lec.times_per_week
+        lec_assign_len = len(solution.lectures[lec.id].assignments)
+        if not lec_assign_len == lec.times_per_week:
+            raise SolverSolutionException(f"""
+                Demand not met for lecture [{lec.id}] {lec.name}:
+                Number of lecture assignments {lec_assign_len} does not equal the demanded {lec.times_per_week} times
+                """)
 
 
 def assert_no_overlap(solution: TimetableSolution, problem: TimetableProblem):
@@ -42,5 +48,11 @@ def assert_no_overlap(solution: TimetableSolution, problem: TimetableProblem):
 
             # prüfen, dass used slots im room avail und teacher avail waren.
             # dafür muss die länge von avail_slots - länge von used_slots = die länge von avails_slots danmach sein
-            assert room_avail_len - used_slots_len == len(room_avail)
-            assert teacher_avail_len - used_slots_len == len(teacher_avail)
+            if not room_avail_len - used_slots_len == len(room_avail):
+                raise SolverSolutionException(f"""
+                    Demand not met: Overlap in room [{assignment.room.id} {assignment.room.name}]
+                """)
+            if not teacher_avail_len - used_slots_len == len(teacher_avail):
+                raise SolverSolutionException(f"""
+                    Demand not met: Overlap for teacher [{lec.teacher.id} {lec.teacher.name}]
+                """)

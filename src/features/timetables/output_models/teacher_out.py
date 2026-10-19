@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from uuid import UUID
 
 from pydantic import BaseModel
@@ -6,7 +5,6 @@ from pydantic import BaseModel
 from features.timetables.types import UniqueID
 
 
-@dataclass(frozen=True)
 class TeacherOut(BaseModel):
     id: UniqueID
     name: str

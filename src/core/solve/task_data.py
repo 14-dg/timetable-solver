@@ -4,16 +4,17 @@ from uuid import UUID, uuid4
 
 from pydantic import BaseModel, Field, model_validator
 
+from core.solve.base_solution import BaseSolution
 from core.solve.solver_task_request import SolverTaskRequest
 from core.solve.solver_task_solutions import SolverTaskSolutions
 from core.solve.solver_task_status import SolverTaskStatus
 
 
-class TaskData(BaseModel):
+class TaskData[T: BaseSolution, R: SolverTaskRequest](BaseModel):
     task_id: UUID = Field(default_factory=uuid4, description="The ID of the task.")
-    request: SolverTaskRequest
+    request: R
     status: SolverTaskStatus = Field(default_factory=SolverTaskStatus)
-    solutions: SolverTaskSolutions = Field(default_factory=SolverTaskSolutions)
+    solutions: SolverTaskSolutions[T] = Field(default_factory=SolverTaskSolutions[T], validate_default=True)
 
 
     @model_validator(mode='before')

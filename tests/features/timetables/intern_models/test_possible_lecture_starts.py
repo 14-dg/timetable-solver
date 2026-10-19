@@ -6,7 +6,7 @@ from features.timetables.input_models.room_in import RoomIn
 from features.timetables.input_models.teacher_in import TeacherIn
 from features.timetables.input_models.time_grid_in import TimeGridIn
 from features.timetables.input_models.timetable_problem import TimetableProblem
-from features.timetables.problem_models.possible_lecture_starts import (
+from features.timetables.intern_models.possible_lecture_starts import (
     PossibleLectureStarts,
 )
 

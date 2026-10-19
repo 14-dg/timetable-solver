@@ -23,7 +23,18 @@ def feasible_problem_mock():
 
 def test_feasible_problem(feasible_problem: TimetableProblem):
     solver = TimetableSolver(feasible_problem)
-    solutions: SolverTaskSolutions = solver.solve()
+    solutions: SolverTaskSolutions[TimetableSolution] = solver.solve()
+    assert isinstance(solutions.solutions[0], TimetableSolution)
+
+
+def test_feasible_problem_multiple_times_per_week(feasible_problem: TimetableProblem):
+    extra_room = RoomIn(name="test_room", availability={0,20})
+    chem_teacher = TeacherIn(name="test_teacher", availability={0,20})
+    chemistry = LectureIn(name="chemistry_test_lecture", times_per_week=2, duration=1, teacher=chem_teacher)
+    feasible_problem.lectures.append(chemistry)
+    feasible_problem.rooms.append(extra_room)
+    solver = TimetableSolver(feasible_problem)
+    solutions: SolverTaskSolutions[TimetableSolution] = solver.solve()
     assert isinstance(solutions.solutions[0], TimetableSolution)
 
 

@@ -10,16 +10,16 @@ from core.solve.solver_task_solutions import SolverTaskSolutions
 from features.timetables.input_models.lecture_in import LectureIn
 from features.timetables.input_models.room_in import RoomIn
 from features.timetables.input_models.timetable_problem import TimetableProblem
+from features.timetables.intern_models.possible_lecture_starts import (
+    PossibleLectureStarts,
+)
 from features.timetables.output_models.assignment import Assignment
 from features.timetables.output_models.lecture_out import LectureOut
 from features.timetables.output_models.room_out import RoomOut
 from features.timetables.output_models.teacher_out import TeacherOut
 from features.timetables.output_models.timetable_solution import TimetableSolution
-from features.timetables.problem_models.possible_lecture_starts import (
-    PossibleLectureStarts,
-)
 from features.timetables.solver.check_solution import (
-    assert_all_lecture_occurences_included,
+    assert_all_lecture_occurrences_included,
     assert_no_overlap,
 )
 from features.timetables.types import UniqueID
@@ -28,7 +28,7 @@ VarKey = tuple[int, int, int, int]
 
 
 @final
-class TimetableSolver(BaseSolver):
+class TimetableSolver(BaseSolver[TimetableSolution]):
     def __init__(
         self,
         problem_data: TimetableProblem,
@@ -88,42 +88,40 @@ class TimetableSolver(BaseSolver):
                 else:
                     output_room = RoomOut(id=room_input.id, name=room_input.name)
                     output_rooms[room_input.id] = output_room
+
+                assignment = Assignment(room=output_room, start=start, end=start+lecture_input.duration - 1)
                 
                 if lecture_input.id in output_lectures:
                     lecture_out: LectureOut = output_lectures[lecture_input.id]
-                    lecture_out.assignments.append(
-                        Assignment(output_room, start=start, end=start+lecture_input.duration)
-                    )
+                    lecture_out.assignments.append(assignment)
 
                 else:
                     lecture_out = LectureOut(
                         id=lecture_input.id,
                         name=lecture_input.name,
                         teacher=output_teachers[lecture_input.teacher.id],
-                        assignments=[
-                            Assignment(output_room, start=start, end=start+lecture_input.duration - 1)
-                        ]
+                        assignments=[assignment]
                     )
                     output_lectures[lecture_out.id] = lecture_out
 
         return TimetableSolution(lectures=output_lectures)
 
 
-    def check_solution(self, solution: TimetableSolution, problem: TimetableProblem):
-        assert_all_lecture_occurences_included(solution, problem.lectures)
+    def check_solution(self, solution: TimetableSolution):
+        assert_all_lecture_occurrences_included(solution, self._problem.lectures)
         assert_no_overlap(solution, self._problem)
 
 
-    def solve(self) -> SolverTaskSolutions:
+    def solve(self) -> SolverTaskSolutions[TimetableSolution]:
         self._solver.parameters.max_time_in_seconds = 30.0
         status: CpSolverStatus = self._solver.solve(self._model)
 
         if status in (cp_model.OPTIMAL, cp_model.FEASIBLE):
             solution: TimetableSolution = self.build_solution()
 
-            self.check_solution(solution, self._problem)
+            self.check_solution(solution)
 
-            return SolverTaskSolutions(
+            return SolverTaskSolutions[TimetableSolution](
                 solutions={
                     0: solution
                 }

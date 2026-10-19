@@ -54,9 +54,9 @@ class TimetableProblem(BaseModel):
 
 
     @model_validator(mode="after")
-    def remove_room_availablity_slots_outside_time_grid(self) -> Self:
+    def remove_room_availability_slots_outside_time_grid(self) -> Self:
         """
-        removes room availibility timeslots that are negative
+        removes room availability timeslots that are negative
         or greater than the max timeslot (time_grid.n_slots)
         """
         max_slot = self.time_grid.n_slots
@@ -67,9 +67,9 @@ class TimetableProblem(BaseModel):
 
 
     @model_validator(mode="after")
-    def remove_teacher_availablity_slots_outside_time_grid(self) -> Self:
+    def remove_teacher_availability_slots_outside_time_grid(self) -> Self:
         """
-        removes teacher availibility timeslots that are negative
+        removes teacher availability timeslots that are negative
         or greater than the max timeslot (time_grid.n_slots)
         """
         max_slot = self.time_grid.n_slots

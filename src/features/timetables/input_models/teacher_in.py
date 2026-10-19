@@ -14,7 +14,7 @@ class TeacherIn(BaseModel):
     )
 
 
-    def __hash__(self) -> UniqueID:
+    def __hash__(self) -> int:
         if isinstance(self.id, UUID):
             return self.id.int
         return self.id
