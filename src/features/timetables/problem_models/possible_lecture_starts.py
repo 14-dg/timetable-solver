@@ -43,15 +43,6 @@ class PossibleLectureStarts:
             valid_starts: frozenset[int] = cls._valid_starts(lecture, mutually_available_slots, time_grid)
             if valid_starts:
                 room_starts[room_index] = valid_starts
-                
-        if not room_starts:
-            raise InfeasibleProblemException(
-                message=f"No possible rooms for lecture [{lecture.name}] [{lecture.id}] found.",
-                details={
-                    "lecture name": lecture.name,
-                    "lecture id": lecture.id,
-                },
-            )
         return room_starts
 
 
