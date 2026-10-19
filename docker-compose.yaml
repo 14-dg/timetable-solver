@@ -1,0 +1,38 @@
+# gemeinsame einstellungen für api und worker
+x-solver-app: &solver-app
+    build:
+        context: .
+        dockerfile: Dockerfile
+    image: timetable-solver:local
+    env_file:
+        - .env
+    # überschreibt die werte aus .env: im container ist "localhost" der container selbst,
+    # redis ist über den service namen erreichbar
+    environment:
+        REDIS_URL: redis://solver-redis:6379/0
+        REDIS_QUEUE_URL: redis://solver-redis:6379/1
+    depends_on:
+        solver-redis:
+            condition: service_healthy
+
+services:
+    solver-redis:
+        # das aktuell neuste redis, als digest, damit das selbe image verwendet wird
+        image: redis@sha256:2c2dff791878316e3b083188be0d578423b24813cdda5de0e80ea4f7b3e6bfd6
+        healthcheck:
+            test: ["CMD", "redis-cli", "ping"]
+            interval: 2s
+            timeout: 3s
+            retries: 15
+
+    solver-api:
+        <<: *solver-app
+        ports:
+            - "7000:7000"
+
+    solver-worker:
+        <<: *solver-app
+        # queue name muss TASK_QUEUE_NAME in core/redis/redis_manager.py entsprechen
+        command: ["rq", "worker", "task_queue", "--with-scheduler", "--url", "redis://solver-redis:6379/1"]
+        deploy:
+            replicas: 3

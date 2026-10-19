@@ -1,0 +1,26 @@
+1. Sichtbarkeit und Monitoring
+
+    RQ Dashboard:
+    Eine fertige Web-Oberfläche für Redis Queue.
+    Du startest es parallel zu deiner API und siehst in Echtzeit,
+    wie viele Solver-Aufgaben in der Warteschlange liegen,
+    welche Worker gerade rechnen und ob Aufgaben fehlgeschlagen sind.
+    Gerade bei komplexen Optimierungsproblemen,
+    wie du sie vielleicht aus Skripten wie Roomfinder kennst,
+    ist es wichtig zu sehen, wenn ein Task auf einen Fehler läuft.
+
+2. Echtzeit-Kommunikation mit dem Client
+
+    Server-Sent Events (SSE) oder WebSockets:
+    Anstatt dass dein Frontend alle zwei Sekunden per GET /status/{task_id} nachfragt,
+    ob der Solver fertig ist (Polling), kannst du eine SSE-Verbindung aufbauen.
+    Der Client hört zu, und sobald der RQ-Worker das Ergebnis in Redis schreibt,
+    pusht FastAPI das fertige Stundenplan-JSON aktiv an den Client.
+    Das spart unnötigen HTTP-Traffic.
+
+3. Schutz der Infrastruktur
+
+    Rate Limiting (z. B. mit SlowAPI):
+    CP-SAT lastet CPUs zu 100 % aus.
+    Eine ungeschützte API ist extrem anfällig für Denial-of-Service-Angriffe (DoS) – absichtlich oder durch einen Bug im Frontend.
+    Du musst zwingend ein Limit setzen (z. B. "Maximal 5 Berechnungs-Requests pro Minute pro IP").
