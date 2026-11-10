@@ -17,7 +17,7 @@ def create_async_redis_client() -> AsyncRedis:
     erstellt einen neuen async redis client.
     die db nummer ist teil der url (redis://host:port/db)
     """
-    return AsyncRedis.from_url(SETTINGS.REDIS_URL, decode_responses=True) # type: ignore
+    return AsyncRedis.from_url(SETTINGS.REDIS_URL, decode_responses=True)  # type: ignore
 
 
 async def init_redis():
@@ -27,8 +27,9 @@ async def init_redis():
     _async_client = create_async_redis_client()
 
     # rq braucht bytes, deshalb hier kein decode_responses
-    _sync_client = SyncRedis.from_url(SETTINGS.REDIS_QUEUE_URL) # type: ignore
+    _sync_client = SyncRedis.from_url(SETTINGS.REDIS_QUEUE_URL)  # type: ignore
     _queue = Queue(name=TASK_QUEUE_NAME, connection=_sync_client)
+
 
 async def close_redis():
     if _async_client:

@@ -14,7 +14,6 @@ class TimetableProblem(BaseModel):
     rooms: list[RoomIn] = Field()
     time_grid: TimeGridIn = Field()
 
-
     @model_validator(mode="after")
     def validate_lectures_unique_ids(self) -> Self:
         """
@@ -25,7 +24,6 @@ class TimetableProblem(BaseModel):
             raise ValueError("Lecture IDs must be unique.")
         return self
 
-
     @model_validator(mode="after")
     def validate_rooms_unique_ids(self) -> Self:
         """
@@ -35,7 +33,6 @@ class TimetableProblem(BaseModel):
         if len(room_ids) != len(self.rooms):
             raise ValueError("Room IDs must be unique.")
         return self
-
 
     @model_validator(mode="after")
     def validate_teachers_unique_ids(self) -> Self:
@@ -52,7 +49,6 @@ class TimetableProblem(BaseModel):
                 raise ValueError("Teacher IDs must be unique for different teachers.")
         return self
 
-
     @model_validator(mode="after")
     def remove_room_availability_slots_outside_time_grid(self) -> Self:
         """
@@ -64,7 +60,6 @@ class TimetableProblem(BaseModel):
             # invalide slots werden entfernt
             room.availability &= set(range(max_slot))
         return self
-
 
     @model_validator(mode="after")
     def remove_teacher_availability_slots_outside_time_grid(self) -> Self:
@@ -78,7 +73,6 @@ class TimetableProblem(BaseModel):
             # invalide slots werden entfernt
             teacher.availability &= set(range(max_slot))
         return self
-
 
     @model_validator(mode="after")
     def validate_max_lecture_duration(self) -> Self:

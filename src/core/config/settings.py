@@ -3,12 +3,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    REDIS_URL: str = Field(
-        default="redis://localhost:6379/0"
-    )
-    REDIS_QUEUE_URL: str = Field(
-        default="redis://localhost:6379/1"
-    )
+    REDIS_URL: str = Field(default="redis://localhost:6379/0")
+    REDIS_QUEUE_URL: str = Field(default="redis://localhost:6379/1")
     REDIS_KEY_PREFIX: str = Field(
         default="solver",
         description="The prefix of every Redis-Key, that belongs to this App.",
@@ -25,11 +21,10 @@ class Settings(BaseSettings):
         validate_default=True,
     )
 
-
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
     )
 
 
-SETTINGS = Settings() # type: ignore
+SETTINGS = Settings()  # type: ignore

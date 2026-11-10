@@ -14,7 +14,6 @@ class TeacherOut(BaseModel):
             return False
         return self.id == value.id
 
-
     def __hash__(self) -> int:
         if isinstance(self.id, UUID):
             return self.id.int

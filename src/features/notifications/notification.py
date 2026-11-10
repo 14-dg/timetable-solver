@@ -13,4 +13,6 @@ async def send_webhook(url: str, task_status: SolverTaskStatus):
             response: httpx.Response = await client.post(url=url, json=task_status.model_dump())
             response.raise_for_status()
         except httpx.HTTPStatusError as e:
-            logger.error(f"HTTP error occured on task completion webhhok.\nStatus Code: {e.response.status_code}\nError message: {e.response.text}")
+            logger.error(
+                f"HTTP error occured on task completion webhhok.\nStatus Code: {e.response.status_code}\nError message: {e.response.text}"
+            )

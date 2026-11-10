@@ -12,7 +12,9 @@ from features.timetables.output_models.timetable_solution import TimetableSoluti
 from features.timetables.timetable_task_request import TimetableTaskRequest
 
 
-async def create_timetable_task(redis: Redis, task_request: TimetableTaskRequest) -> TaskData[TimetableSolution, TimetableTaskRequest]:
+async def create_timetable_task(
+    redis: Redis, task_request: TimetableTaskRequest
+) -> TaskData[TimetableSolution, TimetableTaskRequest]:
     """creates a timetable task request and status in redis"""
     task_data = TaskData[TimetableSolution, TimetableTaskRequest](request=task_request)
     task_key = TIMETABLE_KEYS.task(task_data.task_id)
@@ -24,30 +26,32 @@ async def create_timetable_task(redis: Redis, task_request: TimetableTaskRequest
                 "request": task_data.request.model_dump_json(),
                 "status": task_data.status.model_dump_json(),
                 "solutions": task_data.solutions.model_dump_json(),
-            }
+            },
         )
         await pipe.expire(task_key, CONSTANTS.redis_cache_expiry.timetable.pending)
         await pipe.execute()
     return task_data
 
 
-async def set_timetable_task_solutions(redis: Redis, task_id: UUID, solutions: SolverTaskSolutions[TimetableSolution]) -> None:
+async def set_timetable_task_solutions(
+    redis: Redis, task_id: UUID, solutions: SolverTaskSolutions[TimetableSolution]
+) -> None:
     """sets solutions of a timetable task in redis"""
     task_key = TIMETABLE_KEYS.task(task_id)
     await redis.hset(
-        name=task_key,
-        key=TaskDataKeys.solutions.value,
-        value=solutions.model_dump_json()
+        name=task_key, key=TaskDataKeys.solutions.value, value=solutions.model_dump_json()
     )
 
 
-async def get_timetable_task_data(redis: Redis, task_id: UUID) -> TaskData[TimetableSolution, TimetableTaskRequest]:
+async def get_timetable_task_data(
+    redis: Redis, task_id: UUID
+) -> TaskData[TimetableSolution, TimetableTaskRequest]:
     """retrieves timetable tasks data (request, status, solutions)"""
     task_key = TIMETABLE_KEYS.task(task_id)
     data = await redis.hgetall(task_key)
     if not data:
         raise ObjectNotFoundException(task_id)
-    
+
     return TaskData[TimetableSolution, TimetableTaskRequest].model_validate(data)
 
 
@@ -75,7 +79,9 @@ async def get_timetable_task_status(redis: Redis, task_id: UUID) -> SolverTaskSt
     return SolverTaskStatus.model_validate_json(status_data)
 
 
-async def get_timetable_task_solutions(redis: Redis, task_id: UUID) -> SolverTaskSolutions[TimetableSolution]:
+async def get_timetable_task_solutions(
+    redis: Redis, task_id: UUID
+) -> SolverTaskSolutions[TimetableSolution]:
     """retrieves a timetable tasks solutions"""
     task_key = TIMETABLE_KEYS.task(task_id)
     solutions_data = await redis.hget(
@@ -89,7 +95,7 @@ async def get_timetable_task_solutions(redis: Redis, task_id: UUID) -> SolverTas
 
 async def get_all_timetable_tasks_statuses(redis: Redis) -> list[SolverTaskStatus]:
     """retrieves all timetable tasks statuses"""
-    keys: list[str] = [key async for key in redis.scan_iter(TIMETABLE_KEYS.task_pattern())] # type: ignore
+    keys: list[str] = [key async for key in redis.scan_iter(TIMETABLE_KEYS.task_pattern())]  # type: ignore
     if not keys:
         return []
 
@@ -101,7 +107,9 @@ async def get_all_timetable_tasks_statuses(redis: Redis) -> list[SolverTaskStatu
     return [SolverTaskStatus.model_validate_json(data) for data in results if data]
 
 
-async def update_timetable_task_status(redis: Redis, task_id: UUID, task_status: SolverTaskStatus) -> None:
+async def update_timetable_task_status(
+    redis: Redis, task_id: UUID, task_status: SolverTaskStatus
+) -> None:
     """updates the status of a timetable task in redis"""
     task_key = TIMETABLE_KEYS.task(task_id)
     async with redis.pipeline() as pipe:
@@ -112,9 +120,13 @@ async def update_timetable_task_status(redis: Redis, task_id: UUID, task_status:
         )
         match task_status.status:
             case "Submitted" | "Running":
-                await pipe.expire(name=task_key, time=CONSTANTS.redis_cache_expiry.timetable.pending)
+                await pipe.expire(
+                    name=task_key, time=CONSTANTS.redis_cache_expiry.timetable.pending
+                )
             case "Completed":
-                await pipe.expire(name=task_key, time=CONSTANTS.redis_cache_expiry.timetable.completed)
+                await pipe.expire(
+                    name=task_key, time=CONSTANTS.redis_cache_expiry.timetable.completed
+                )
             case "Failed":
                 await pipe.expire(name=task_key, time=CONSTANTS.redis_cache_expiry.timetable.failed)
         await pipe.execute()

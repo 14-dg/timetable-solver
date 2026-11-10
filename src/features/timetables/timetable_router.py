@@ -24,10 +24,7 @@ from features.timetables.timetable_task_request import TimetableTaskRequest
 RedisDep = Annotated[Redis, Depends(get_redis_client)]
 QueueDep = Annotated[Queue, Depends(get_redis_queue)]
 
-timetable_router = APIRouter(
-    prefix="/timetable",
-    tags=["TIMETABLE_SOLVER"]
-)
+timetable_router = APIRouter(prefix="/timetable", tags=["TIMETABLE_SOLVER"])
 
 
 @timetable_router.post(path="/", response_model=tuple[str, SolverTaskStatus])
@@ -36,15 +33,17 @@ async def create_timetable(
     queue: QueueDep,
     task_request: TimetableTaskRequest,
 ) -> tuple[str, SolverTaskStatus]:
-    task_data: TaskData[TimetableSolution, TimetableTaskRequest] = await create_timetable_task(redis_client, task_request)
-    queue.enqueue( # type: ignore
+    task_data: TaskData[TimetableSolution, TimetableTaskRequest] = await create_timetable_task(
+        redis_client, task_request
+    )
+    queue.enqueue(  # type: ignore
         run_timetable_solver_task,
         task_data.task_id,
         job_id=str(task_data.task_id),
     )
     return (str(task_data.task_id), task_data.status)
 
-    
+
 @timetable_router.get(path="/", response_model=list[SolverTaskStatus])
 async def get_all_status(
     redis_client: RedisDep,
@@ -60,7 +59,9 @@ async def get_status(
     return await get_timetable_task_status(redis_client, task_id)
 
 
-@timetable_router.get(path="/{task_id}/solutions", response_model=SolverTaskSolutions[TimetableSolution])
+@timetable_router.get(
+    path="/{task_id}/solutions", response_model=SolverTaskSolutions[TimetableSolution]
+)
 async def get_solutions(
     redis_client: RedisDep,
     task_id: UUID,
@@ -83,7 +84,7 @@ async def cancel_task(
         # Job wird gerade vom Worker berechnet -> Signal zum Abbruch senden
         elif job.is_started:
             send_stop_job_command(queue.connection, job_id)
-    
+
     await delete_timetable_task(redis_client, task_id)
 
     return {"detail": f"Task {task_id} was cancelled successfully."}

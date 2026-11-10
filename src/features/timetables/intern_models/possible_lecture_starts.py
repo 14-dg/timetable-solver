@@ -17,9 +17,10 @@ class PossibleLectureStarts:
     # key = raum index, value = all valid start slots of a room for the lecture
     room_starts: dict[int, frozenset[int]]
 
-
     @staticmethod
-    def _valid_starts(lecture: LectureIn, available: set[int], time_grid: TimeGridIn) -> frozenset[int]:
+    def _valid_starts(
+        lecture: LectureIn, available: set[int], time_grid: TimeGridIn
+    ) -> frozenset[int]:
         last_offset: int = lecture.duration - 1
         return frozenset(
             start
@@ -31,27 +32,31 @@ class PossibleLectureStarts:
             and all(start + k in available for k in range(lecture.duration))
         )
 
-
     @classmethod
-    def _room_starts(cls, rooms: list[RoomIn], lecture: LectureIn, time_grid: TimeGridIn) -> dict[int, frozenset[int]]:
+    def _room_starts(
+        cls, rooms: list[RoomIn], lecture: LectureIn, time_grid: TimeGridIn
+    ) -> dict[int, frozenset[int]]:
         # tmp for possible starts for a single lecture for multiple rooms
         room_starts: dict[int, frozenset[int]] = {}
         for room_index, room in enumerate(rooms):
             # slots that are available for the teacher and room
             mutually_available_slots: set[int] = lecture.teacher.availability & room.availability
             # valid start slots. room must be available for the duration of the lecture
-            valid_starts: frozenset[int] = cls._valid_starts(lecture, mutually_available_slots, time_grid)
+            valid_starts: frozenset[int] = cls._valid_starts(
+                lecture, mutually_available_slots, time_grid
+            )
             if valid_starts:
                 room_starts[room_index] = valid_starts
         return room_starts
-
 
     @classmethod
     def from_problem(cls, problem: TimetableProblem) -> list[Self]:
         result: list[Self] = []
         unplaceable: list[LectureIn] = []
         for lecture_index, lecture in enumerate(problem.lectures):
-            room_starts: dict[int, frozenset[int]] = cls._room_starts(problem.rooms, lecture, problem.time_grid)
+            room_starts: dict[int, frozenset[int]] = cls._room_starts(
+                problem.rooms, lecture, problem.time_grid
+            )
             if room_starts:
                 result.append(cls(lecture_index, room_starts))
             else:
@@ -61,9 +66,7 @@ class PossibleLectureStarts:
             raise InfeasibleProblemException(
                 message=f"{len(unplaceable)} lecture(s) cannot be placed in any room.",
                 details={
-                    "lectures": [
-                        {"name": lec.name, "id": str(lec.id)} for lec in unplaceable
-                    ]
+                    "lectures": [{"name": lec.name, "id": str(lec.id)} for lec in unplaceable]
                 },
             )
         return result

@@ -14,16 +14,17 @@ a **proposed** schedule. It never writes to the myroomfinder database
 directly — all proposals are reviewed and applied by an admin (see #183).
 
 ## 2. Architecture
+```
 
-```
 Frontend (app.myroomfinder.de)
-   │  HTTPS + JWT (Supabase Auth)
-   ▼
+│ HTTPS + JWT (Supabase Auth)
+▼
 Supabase Edge Function: run-solver
-   │  HTTPS + shared secret (Authorization: Bearer <secret>)
-   ▼
+│ HTTPS + shared secret (Authorization: Bearer <secret>)
+▼
 timetable-solver (FastAPI, own deployment on Render free tier)
-```
+
+````
 
 - `run-solver` collects data from Postgres, calls the solver, and writes the
   result into `schedule_proposals` (see §8). It never applies the proposal.
@@ -75,7 +76,7 @@ Liveness check, no auth required.
 
 ```json
 { "status": "ok" }
-```
+````
 
 ### `POST /solve/start`
 
@@ -162,9 +163,7 @@ result into `schedule_proposals`.
     }
   ],
 
-  "lecturers": [
-    { "id": 12, "name": "Prof. Müller", "department": "F07" }
-  ],
+  "lecturers": [{ "id": 12, "name": "Prof. Müller", "department": "F07" }],
 
   "lecture_timeslots": [
     {
@@ -213,16 +212,16 @@ result into `schedule_proposals`.
     "prefer_morning_weight": 0.0,
 
     "config": {
-      "10_room_equipment":     { "enabled": true,  "mode": "hard" },
-      "11_room_seats":         { "enabled": true,  "mode": "hard" },
-      "20_idle_gaps":          { "enabled": true,  "weight": 1.0, "weight_by_attendees": false },
-      "30_edge_hours":         { "enabled": true,  "weight": 1.0, "weight_by_attendees": false },
-      "40_room_consistency":   { "enabled": true,  "weight": 0.5 },
-      "50_mandatory_overlap":  { "enabled": true,  "weight": 0.7 },
-      "60_elective_overlap":   { "enabled": true,  "weight": 0.7 },
-      "70_preferred_times":    { "enabled": true,  "weight": 0.5 },
-      "80_max_teaching_hours": { "enabled": true,  "mode": "hard" },
-      "90_walking_times":      { "enabled": false }
+      "10_room_equipment": { "enabled": true, "mode": "hard" },
+      "11_room_seats": { "enabled": true, "mode": "hard" },
+      "20_idle_gaps": { "enabled": true, "weight": 1.0, "weight_by_attendees": false },
+      "30_edge_hours": { "enabled": true, "weight": 1.0, "weight_by_attendees": false },
+      "40_room_consistency": { "enabled": true, "weight": 0.5 },
+      "50_mandatory_overlap": { "enabled": true, "weight": 0.7 },
+      "60_elective_overlap": { "enabled": true, "weight": 0.7 },
+      "70_preferred_times": { "enabled": true, "weight": 0.5 },
+      "80_max_teaching_hours": { "enabled": true, "mode": "hard" },
+      "90_walking_times": { "enabled": false }
     }
   },
 
@@ -236,16 +235,16 @@ result into `schedule_proposals`.
 
 ### Field notes
 
-| Field | Source table | Notes |
-|---|---|---|
-| `rooms[]` | `rooms`, `room_equipment` | `equipment_ids` flattened from the join table |
-| `lecturers[]` | `lecturers` | Only `id`/`name`/`department` — solver does not need contact info |
-| `lecture_timeslots[]` | `lecture_timeslots`, `lectures`, `timeslot_lecturers`, `lecture_courses`, `lecture_fachsemester` | Denormalized/joined by the Edge Function before sending |
-| `lecturer_availability[]` | `lecturer_availability` | `constraint_type` values: `hard` / `soft` |
-| `blocked_room_bookings[]` | `bookings` | External one-off bookings that block a room regardless of the regular timetable |
-| `constraints` | `scheduling_config` (#179) | One row per institution |
-| `constraints.config` | `scheduling_config.constraint_config` (jsonb) | See §6.1 for the exact schema |
-| `lecture_type_workload` | `lecture_type_workload` (#179) | Keyed by the `lecture_type` enum |
+| Field                     | Source table                                                                                     | Notes                                                                           |
+| ------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| `rooms[]`                 | `rooms`, `room_equipment`                                                                        | `equipment_ids` flattened from the join table                                   |
+| `lecturers[]`             | `lecturers`                                                                                      | Only `id`/`name`/`department` — solver does not need contact info               |
+| `lecture_timeslots[]`     | `lecture_timeslots`, `lectures`, `timeslot_lecturers`, `lecture_courses`, `lecture_fachsemester` | Denormalized/joined by the Edge Function before sending                         |
+| `lecturer_availability[]` | `lecturer_availability`                                                                          | `constraint_type` values: `hard` / `soft`                                       |
+| `blocked_room_bookings[]` | `bookings`                                                                                       | External one-off bookings that block a room regardless of the regular timetable |
+| `constraints`             | `scheduling_config` (#179)                                                                       | One row per institution                                                         |
+| `constraints.config`      | `scheduling_config.constraint_config` (jsonb)                                                    | See §6.1 for the exact schema                                                   |
+| `lecture_type_workload`   | `lecture_type_workload` (#179)                                                                   | Keyed by the `lecture_type` enum                                                |
 
 ### 6.1 Conventions
 
@@ -307,11 +306,14 @@ with `unresolved` entries explaining which constraint blocked the schedule.
       "lecturer_ids": [15]
     }
   ],
-  "unresolved": [
-    { "lecture_id": 99, "reason": "no_available_room" }
-  ],
+  "unresolved": [{ "lecture_id": 99, "reason": "no_available_room" }],
   "violations": [
-    { "type": "soft", "rule": "prefer_morning", "timeslot_id": 42, "message": "Scheduled at 10:35, preferred morning slot" }
+    {
+      "type": "soft",
+      "rule": "prefer_morning",
+      "timeslot_id": 42,
+      "message": "Scheduled at 10:35, preferred morning slot"
+    }
   ],
   "score": 0.87
 }
@@ -379,11 +381,11 @@ understands what happens to its output.
 
 ## 9. Error handling
 
-| Status | Meaning | Body |
-|---|---|---|
-| `401` | Missing/invalid shared secret | `{ "error": "unauthorized" }` |
-| `422` | Request failed schema validation | `{ "error": "validation_error", "details": [...] }` |
-| `500` | Unhandled solver error | `{ "error": "internal_error" }` |
+| Status | Meaning                          | Body                                                |
+| ------ | -------------------------------- | --------------------------------------------------- |
+| `401`  | Missing/invalid shared secret    | `{ "error": "unauthorized" }`                       |
+| `422`  | Request failed schema validation | `{ "error": "validation_error", "details": [...] }` |
+| `500`  | Unhandled solver error           | `{ "error": "internal_error" }`                     |
 
 For `GET /solve/{job_id}` on an unknown job id: `404`.
 
@@ -420,4 +422,7 @@ For `GET /solve/{job_id}` on an unknown job id: `404`.
 6. Follow-up data-model extensions tracked separately in #217:
    allowed/preferred/forbidden rooms, lecturer irregular unavailability,
    room regular availability, walking distances.
+
+```
+
 ```

@@ -5,7 +5,6 @@ from core.solve.solver_task_solutions import SolverTaskSolutions
 
 
 class BaseSolver[T: BaseSolution](ABC):
-
     @abstractmethod
     def solve(self) -> SolverTaskSolutions[T]:
         """

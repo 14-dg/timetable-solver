@@ -7,7 +7,9 @@ from features.timetables.output_models.timetable_solution import TimetableSoluti
 from features.timetables.types import UniqueID
 
 
-def assert_all_lecture_occurrences_included(solution: TimetableSolution, lectures_in: list[LectureIn]):
+def assert_all_lecture_occurrences_included(
+    solution: TimetableSolution, lectures_in: list[LectureIn]
+):
     for lec in lectures_in:
         lec_assign_len = len(solution.lectures[lec.id].assignments)
         if not lec_assign_len == lec.times_per_week:
@@ -19,8 +21,9 @@ def assert_all_lecture_occurrences_included(solution: TimetableSolution, lecture
 
 def assert_no_overlap(solution: TimetableSolution, problem: TimetableProblem):
     rooms_in: dict[UniqueID, RoomIn] = {room.id: room for room in problem.rooms}
-    teachers_in: dict[UniqueID, TeacherIn] = {lecture.teacher.id: lecture.teacher for lecture in problem.lectures}
-
+    teachers_in: dict[UniqueID, TeacherIn] = {
+        lecture.teacher.id: lecture.teacher for lecture in problem.lectures
+    }
 
     rooms: dict[UniqueID, set[int]] = {}
     teachers: dict[UniqueID, set[int]] = {}

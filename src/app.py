@@ -21,11 +21,7 @@ async def lifespan(app: FastAPI):
     await close_redis()
 
 
-app = FastAPI(
-    title="Roomfinder Solver Service",
-    version="0.0.1",
-    lifespan=lifespan
-)
+app = FastAPI(title="Roomfinder Solver Service", version="0.0.1", lifespan=lifespan)
 
 
 app.include_router(timetable_router)

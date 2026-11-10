@@ -17,10 +17,7 @@ class InfeasibleProblemException(SolverTaskException):
         message: str,
         details: dict[str, Any] | None = None,
     ) -> None:
-        super().__init__(
-            message=message,
-            details=details
-        )
+        super().__init__(message=message, details=details)
 
 
 class SolverSolutionException(SolverTaskException):
@@ -29,7 +26,4 @@ class SolverSolutionException(SolverTaskException):
         message: str,
         details: dict[str, Any] | None = None,
     ) -> None:
-        super().__init__(
-            message=message,
-            details=details
-        )
+        super().__init__(message=message, details=details)

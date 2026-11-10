@@ -6,9 +6,10 @@ from core.config.settings import SETTINGS
 
 
 class TaskDataKeys(Enum):
-    request="request"
-    status="status"
-    solutions="solutions"
+    request = "request"
+    status = "status"
+    solutions = "solutions"
+
 
 type DomainType = Literal["timetable"]
 

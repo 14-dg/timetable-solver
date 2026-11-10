@@ -59,12 +59,14 @@ async def _solve_and_store(redis: Redis, task_id: UUID) -> None:
         solutions: SolverTaskSolutions[TimetableSolution] = solver.solve()
         await set_timetable_task_solutions(redis, task_id, solutions)
         task_status.status = "Completed"
-        
+
     except Exception as e:
         task_status.status = "Failed"
         match e:
-            case SolverTaskException(): task_status.error = e.message
-            case Exception(): task_status.error = "Unknown Exception"
+            case SolverTaskException():
+                task_status.error = e.message
+            case Exception():
+                task_status.error = "Unknown Exception"
         logger.exception(f"Solver Error in Task {task_id}")
 
     task_status.completed_at = datetime.now(UTC)

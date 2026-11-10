@@ -13,10 +13,12 @@ from features.timetables.solver.timetable_solver import TimetableSolver
 
 @pytest.fixture(name="feasible_problem")
 def feasible_problem_mock():
-    room_in = RoomIn(name="test_room", availability={0,1})
-    teacher_in = TeacherIn(name="test_teacher", availability={0,1})
+    room_in = RoomIn(name="test_room", availability={0, 1})
+    teacher_in = TeacherIn(name="test_teacher", availability={0, 1})
     math = LectureIn(name="math_test_lecture", times_per_week=1, duration=1, teacher=teacher_in)
-    biology = LectureIn(name="biology_test_lecture", times_per_week=1, duration=1, teacher=teacher_in)
+    biology = LectureIn(
+        name="biology_test_lecture", times_per_week=1, duration=1, teacher=teacher_in
+    )
     time_grid_in = TimeGridIn(days=5, slots_per_day=10)
     return TimetableProblem(lectures=[math, biology], rooms=[room_in], time_grid=time_grid_in)
 
@@ -28,9 +30,11 @@ def test_feasible_problem(feasible_problem: TimetableProblem):
 
 
 def test_feasible_problem_multiple_times_per_week(feasible_problem: TimetableProblem):
-    extra_room = RoomIn(name="test_room", availability={0,20})
-    chem_teacher = TeacherIn(name="test_teacher", availability={0,20})
-    chemistry = LectureIn(name="chemistry_test_lecture", times_per_week=2, duration=1, teacher=chem_teacher)
+    extra_room = RoomIn(name="test_room", availability={0, 20})
+    chem_teacher = TeacherIn(name="test_teacher", availability={0, 20})
+    chemistry = LectureIn(
+        name="chemistry_test_lecture", times_per_week=2, duration=1, teacher=chem_teacher
+    )
     feasible_problem.lectures.append(chemistry)
     feasible_problem.rooms.append(extra_room)
     solver = TimetableSolver(feasible_problem)

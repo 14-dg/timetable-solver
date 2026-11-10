@@ -35,7 +35,9 @@ class TimetableSolver(BaseSolver[TimetableSolution]):
     ) -> None:
         self._problem: TimetableProblem = problem_data
         self._solver = cp_model.CpSolver()
-        self._possible_lecture_starts: list[PossibleLectureStarts] = PossibleLectureStarts.from_problem(self._problem)
+        self._possible_lecture_starts: list[PossibleLectureStarts] = (
+            PossibleLectureStarts.from_problem(self._problem)
+        )
         self._x: dict[VarKey, cp_model.IntVar] = {}
         self._model: cp_model.CpModel = self.build_model()
 
@@ -52,7 +54,9 @@ class TimetableSolver(BaseSolver[TimetableSolution]):
                 for room_index, starts in possible.room_starts.items():
                     for start in sorted(starts):
                         key = (lecture_index, occurrence, room_index, start)
-                        var = model.new_bool_var(f"x_l{lecture_index}_k{occurrence}_r{room_index}_s{start}")
+                        var = model.new_bool_var(
+                            f"x_l{lecture_index}_k{occurrence}_r{room_index}_s{start}"
+                        )
                         self._x[key] = var
                         by_occurrence[(lecture_index, occurrence)].append(var)
                         for slot in range(start, start + lecture.duration):
@@ -67,7 +71,6 @@ class TimetableSolver(BaseSolver[TimetableSolution]):
             model.add_at_most_one(variables)
 
         return model
-
 
     def build_solution(self) -> TimetableSolution:
         output_lectures: dict[UniqueID, LectureOut] = {}
@@ -89,8 +92,10 @@ class TimetableSolver(BaseSolver[TimetableSolution]):
                     output_room = RoomOut(id=room_input.id, name=room_input.name)
                     output_rooms[room_input.id] = output_room
 
-                assignment = Assignment(room=output_room, start=start, end=start+lecture_input.duration - 1)
-                
+                assignment = Assignment(
+                    room=output_room, start=start, end=start + lecture_input.duration - 1
+                )
+
                 if lecture_input.id in output_lectures:
                     lecture_out: LectureOut = output_lectures[lecture_input.id]
                     lecture_out.assignments.append(assignment)
@@ -100,17 +105,15 @@ class TimetableSolver(BaseSolver[TimetableSolution]):
                         id=lecture_input.id,
                         name=lecture_input.name,
                         teacher=output_teachers[lecture_input.teacher.id],
-                        assignments=[assignment]
+                        assignments=[assignment],
                     )
                     output_lectures[lecture_out.id] = lecture_out
 
         return TimetableSolution(lectures=output_lectures)
 
-
     def check_solution(self, solution: TimetableSolution):
         assert_all_lecture_occurrences_included(solution, self._problem.lectures)
         assert_no_overlap(solution, self._problem)
-
 
     def solve(self) -> SolverTaskSolutions[TimetableSolution]:
         self._solver.parameters.max_time_in_seconds = 30.0
@@ -121,14 +124,9 @@ class TimetableSolver(BaseSolver[TimetableSolution]):
 
             self.check_solution(solution)
 
-            return SolverTaskSolutions[TimetableSolution](
-                solutions={
-                    0: solution
-                }
-            )
+            return SolverTaskSolutions[TimetableSolution](solutions={0: solution})
 
         if status == cp_model.INFEASIBLE:
-
             raise InfeasibleProblemException(
                 message="No timetable satisfies all constraints.", details={}
             )
